@@ -2,7 +2,7 @@
 
 Bot de paper trading con la estrategia MEC (Directional Change + Head & Shoulders).
 
-## Portfolio
+## Portfolio 
 - **Cuenta A — M1 (40€):** leverage 3×, vol sizing
 - **Cuenta B — S4 (160€):** leverage dinámico 2×–5× con filtro momentum
 
