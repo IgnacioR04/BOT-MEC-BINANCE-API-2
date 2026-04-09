@@ -1,4 +1,4 @@
-# MEC Paper Trading Bot
+# MEC Paper Trading Bot 
 
 Bot de paper trading con la estrategia MEC (Directional Change + Head & Shoulders).
  
