@@ -1,12 +1,12 @@
 """
-MEC Trading Bot v3 — Paper + Live Binance
-==========================================
+MEC Trading Bot v4 — Paper + Live Bitget
+=========================================
 - Paper trading: cuentas M1 y S4 simuladas, siempre activas.
-- Live trading: si BINANCE_API_KEY esta en el entorno, ejecuta ordenes
-  reales en Binance USDT-M Futures (BTCUSDT perpetuo).
-- Ambas pistas corren en paralelo para comparar resultados.
+- Live trading: si BITGET_API_KEY esta en el entorno, ejecuta ordenes
+  reales en Bitget USDT Futures (BTCUSDT perpetuo).
+- El live usa TODO el balance disponible en la cuenta de futuros.
 
-Para activar live: pon BINANCE_API_KEY y BINANCE_API_SECRET
+Para activar live: pon BITGET_API_KEY, BITGET_API_SECRET, BITGET_PASSPHRASE
   como GitHub Secrets o variables de entorno en Railway.
 """
 
@@ -20,14 +20,14 @@ import pandas as pd
 import yfinance as yf
 
 # ── Deteccion de modo live ──────────────────────────────────────────────────
-LIVE_MODE = bool(os.environ.get("BINANCE_API_KEY"))
+LIVE_MODE = bool(os.environ.get("BITGET_API_KEY"))
 if LIVE_MODE:
     try:
-        from binance_api import client_from_env
-        print("  [LIVE] Credenciales Binance detectadas — modo live activo")
+        from bitget_api import client_from_env
+        print("  [LIVE] Credenciales Bitget detectadas — modo live activo")
     except ImportError:
         LIVE_MODE = False
-        print("  [AVISO] binance_api.py no encontrado — solo paper trading")
+        print("  [AVISO] bitget_api.py no encontrado — solo paper trading")
 
 # ── Configuracion portfolio ─────────────────────────────────────────────────
 CAPITAL_A = 40.0
@@ -51,8 +51,9 @@ TP_ATR         = 1.5
 HORIZON_DAYS   = 30
 FEE_BPS        = 5.0
 
-# Capital real que se arriesga por trade (10% del balance disponible en Binance)
-LIVE_RISK_FRACTION = 0.10
+# Live: usa el 100% del balance disponible en Bitget Futures
+# Cambia este valor si quieres arriesgar menos (ej: 0.5 = 50%)
+LIVE_RISK_FRACTION = 1.0
 
 
 # ── Helpers de columnas ──────────────────────────────────────────────────────
@@ -311,7 +312,7 @@ def add_indicators(df):
     rs    = gain / loss.replace(0, np.nan)
     df["RSI"] = 100 - 100 / (1 + rs)
 
-    df["ROC10"]  = cl.pct_change(10) * 100
+    df["ROC10"]   = cl.pct_change(10) * 100
     vol = df["Volume"].astype(float)
     df["VOL_REL"] = vol / vol.rolling(20).mean()
     df["MA200"]   = cl.rolling(200, min_periods=50).mean()
@@ -376,6 +377,17 @@ def make_account(name, capital):
     }
 
 
+def _make_live_state():
+    return {
+        "enabled":        LIVE_MODE,
+        "position":       None,
+        "trades":         [],
+        "equity_history": [],
+        "last_order_id":  None,
+        "last_error":     None,
+    }
+
+
 def load_state():
     if STATE_FILE.exists():
         with open(STATE_FILE) as f:
@@ -391,17 +403,6 @@ def load_state():
         "last_run":    None,
         "runs":        0,
         "live":        _make_live_state(),
-    }
-
-
-def _make_live_state():
-    return {
-        "enabled":        LIVE_MODE,
-        "position":       None,
-        "trades":         [],
-        "equity_history": [],
-        "last_order_id":  None,
-        "last_error":     None,
     }
 
 
@@ -532,34 +533,39 @@ def update_equity(account, current_price):
         account["equity_history"] = account["equity_history"][-1000:]
 
 
-# ── Live trading — Binance ────────────────────────────────────────────────────
+# ── Live trading — Bitget ─────────────────────────────────────────────────────
 def live_open_trade(state, current_sig, entry_px, atr, row):
     live = state["live"]
     if live.get("position") is not None:
         print("  [LIVE] Ya hay posicion abierta, no se abre nueva")
         return
     try:
-        client    = client_from_env()
+        client = client_from_env()
+
         if client.has_open_position():
-            print("  [LIVE] Posicion detectada en Binance, sincronizando")
+            print("  [LIVE] Posicion detectada en Bitget, sincronizando")
             live["position"] = {"synced_from_exchange": True}
             return
 
         balance   = client.get_balance()
         available = float(balance["available"])
-        print(f"  [LIVE] Balance Binance disponible: {available:.2f} USDT")
-        if available < 10.0:
-            print("  [LIVE] Balance insuficiente (<10 USDT), no se opera")
+        print(f"  [LIVE] Balance Bitget disponible: {available:.2f} USDT")
+
+        if available < 5.0:
+            print("  [LIVE] Balance insuficiente (<5 USDT), no se opera")
             return
 
+        # Usar todo el balance disponible segun LIVE_RISK_FRACTION (por defecto 100%)
+        margin   = available * LIVE_RISK_FRACTION
+
+        # Leverage segun sizing S4 (dinamico 2x-5x)
         leverage, _ = sizing_s4(row, current_sig)
         leverage    = int(np.clip(int(leverage), 2, 5))
-        margin      = available * LIVE_RISK_FRACTION
         notional    = margin * leverage
 
-        sl_dist  = SL_ATR * atr
-        tp_dist  = TP_ATR * atr
-        side     = "BUY" if current_sig == 1 else "SELL"
+        sl_dist   = SL_ATR * atr
+        tp_dist   = TP_ATR * atr
+        direction = "buy" if current_sig == 1 else "sell"
         if current_sig == 1:
             sl_price = entry_px - sl_dist
             tp_price = entry_px + tp_dist
@@ -569,7 +575,7 @@ def live_open_trade(state, current_sig, entry_px, atr, row):
 
         result = client.place_order(
             symbol    = "BTCUSDT",
-            side      = side,
+            direction = direction,
             size_usdt = notional,
             sl_price  = sl_price,
             tp_price  = tp_price,
@@ -587,13 +593,13 @@ def live_open_trade(state, current_sig, entry_px, atr, row):
             "margin_usdt": round(margin, 4),
             "notional":    round(notional, 4),
             "order_id":    result["orderId"],
-            "sl_algo_id":  result["sl_algo_id"],
-            "tp_algo_id":  result["tp_algo_id"],
             "open_date":   datetime.now(timezone.utc).isoformat(),
         }
         live["last_order_id"] = result["orderId"]
         live["last_error"]    = None
-        print(f"  [LIVE] OK: {side} {result['qty']} BTC @ ~{result['entry_px']:.0f}"
+        print(f"  [LIVE] OK: {direction.upper()} {result['qty']} BTC"
+              f" @ ~{result['entry_px']:.0f}"
+              f"  margen={margin:.2f} USDT  notional={notional:.2f} USDT"
               f"  SL={sl_price:.0f}  TP={tp_price:.0f}  lev={leverage}x")
 
     except Exception as e:
@@ -603,7 +609,7 @@ def live_open_trade(state, current_sig, entry_px, atr, row):
 
 def live_sync(state):
     """
-    Comprueba si la posicion live sigue abierta en Binance.
+    Comprueba si la posicion live sigue abierta en Bitget.
     Si ya no existe (TP o SL tocado), la marca como cerrada.
     """
     live = state["live"]
@@ -615,19 +621,19 @@ def live_sync(state):
         client  = client_from_env()
         has_pos = client.has_open_position("BTCUSDT")
         if not has_pos:
-            local = live["position"]
+            local    = live["position"]
             pnl_usdt = 0.0
             try:
-                income = client.get_realized_pnl(limit=3)
-                if income:
-                    pnl_usdt = sum(float(i.get("income", 0)) for i in income)
+                fills = client.get_realized_pnl(limit=3)
+                if fills:
+                    pnl_usdt = sum(float(f.get("profit", 0)) for f in fills)
             except Exception:
                 pass
             trade_record = {
                 "side":        local.get("side"),
                 "entry_px":    local.get("entry_px"),
                 "exit_px":     None,
-                "exit_reason": "TP_SL_BINANCE",
+                "exit_reason": "TP_SL_BITGET",
                 "pnl_usdt":    round(pnl_usdt, 4),
                 "leverage":    local.get("leverage"),
                 "order_id":    local.get("order_id"),
@@ -637,9 +643,9 @@ def live_sync(state):
             live["trades"].append(trade_record)
             live["position"] = None
             sign = "+" if pnl_usdt >= 0 else ""
-            print(f"  [LIVE] Posicion cerrada en Binance. PnL={sign}{pnl_usdt:.4f} USDT")
+            print(f"  [LIVE] Posicion cerrada en Bitget. PnL={sign}{pnl_usdt:.4f} USDT")
         else:
-            print("  [LIVE] Posicion sigue abierta en Binance")
+            print("  [LIVE] Posicion sigue abierta en Bitget")
     except Exception as e:
         live["last_error"] = str(e)
         print(f"  [LIVE] ERROR en sync: {e}")
@@ -650,16 +656,17 @@ def live_update_equity(state):
     try:
         client  = client_from_env()
         balance = client.get_balance()
-        equity  = float(balance["wallet"]) + float(balance["unrealized_pl"])
+        equity  = float(balance["equity"])
+        unreal  = float(balance["unrealized_pl"])
         live["equity_history"].append({
             "ts":       datetime.now(timezone.utc).isoformat(),
             "equity":   round(equity, 4),
-            "unrealPL": round(balance["unrealized_pl"], 4),
+            "unrealPL": round(unreal, 4),
         })
         if len(live["equity_history"]) > 1000:
             live["equity_history"] = live["equity_history"][-1000:]
-        print(f"  [LIVE] Equity Binance: {equity:.4f} USDT  "
-              f"UnrealPL: {balance['unrealized_pl']:+.4f} USDT")
+        print(f"  [LIVE] Equity Bitget: {equity:.4f} USDT  "
+              f"UnrealPL: {unreal:+.4f} USDT")
     except Exception as e:
         live["last_error"] = str(e)
         print(f"  [LIVE] ERROR actualizando equity: {e}")
@@ -704,19 +711,21 @@ def publish_data(state, df, current_signal):
         }
 
     def _live_snapshot(live):
-        eq_hist = live.get("equity_history", [])
-        equity  = eq_hist[-1]["equity"]   if eq_hist else 0.0
-        unreal  = eq_hist[-1].get("unrealPL", 0.0) if eq_hist else 0.0
-        pos     = live.get("position")
+        eq_hist  = live.get("equity_history", [])
+        equity   = eq_hist[-1]["equity"]          if eq_hist else 0.0
+        unreal   = eq_hist[-1].get("unrealPL", 0) if eq_hist else 0.0
+        pos      = live.get("position")
         pos_snap = None
         if pos and not pos.get("synced_from_exchange"):
             pos_snap = {
-                "side":      pos.get("side"),
-                "entry_px":  round(pos.get("entry_px", 0), 0),
-                "sl_px":     round(pos.get("sl_px", 0), 0),
-                "tp_px":     round(pos.get("tp_px", 0), 0),
-                "leverage":  pos.get("leverage"),
-                "open_date": pos.get("open_date"),
+                "side":        pos.get("side"),
+                "entry_px":    round(pos.get("entry_px", 0), 0),
+                "sl_px":       round(pos.get("sl_px", 0), 0),
+                "tp_px":       round(pos.get("tp_px", 0), 0),
+                "leverage":    pos.get("leverage"),
+                "margin_usdt": pos.get("margin_usdt"),
+                "notional":    pos.get("notional"),
+                "open_date":   pos.get("open_date"),
             }
         closed = live.get("trades", [])
         return {
@@ -777,15 +786,15 @@ def publish_data(state, df, current_signal):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f, separators=(",", ":"), default=str)
 
-    modo = "LIVE+PAPER" if LIVE_MODE else "PAPER"
+    modo = "LIVE+PAPER (Bitget)" if LIVE_MODE else "PAPER ONLY"
     print(f"  docs/data.json OK — BTC={btc_price}  senal={sig_text}  modo={modo}")
 
 
 # ── Main ─────────────────────────────────────────────────────────────────────
 def run():
     print(f"\n{'='*55}")
-    print(f"  MEC Bot v3 — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC")
-    print(f"  Modo: {'PAPER + LIVE (Binance)' if LIVE_MODE else 'PAPER ONLY'}")
+    print(f"  MEC Bot v4 — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC")
+    print(f"  Modo: {'PAPER + LIVE (Bitget)' if LIVE_MODE else 'PAPER ONLY'}")
     print(f"{'='*55}")
 
     state = load_state()
@@ -813,15 +822,12 @@ def run():
     sig_str = "LONG" if current_sig == 1 else "SHORT" if current_sig == 2 else "neutral"
     print(f"  Precio: {current_px:.0f}  |  Senal: {sig_str}  |  ATR: {atr_val:.0f}")
 
-    # Cerrar trades paper si toca
     for acc in [state["account_a"], state["account_b"]]:
         check_close_trade(acc, last_row)
 
-    # Sincronizar posicion live con Binance
     if LIVE_MODE:
         live_sync(state)
 
-    # Si hay senal nueva -> operar
     if current_sig in (1, 2) and current_sig != prev_signal:
         print(f"\n  *** SENAL NUEVA: {sig_str} ***")
         open_trade(state["account_a"], current_sig, current_px, atr_val, sizing_m1, last_row)
@@ -832,7 +838,6 @@ def run():
     elif current_sig == 0 and prev_signal != 0:
         state["last_signal"] = 0
 
-    # Actualizar equity
     for acc in [state["account_a"], state["account_b"]]:
         update_equity(acc, current_px)
     if LIVE_MODE:
