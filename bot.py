@@ -392,6 +392,15 @@ def load_state():
     if STATE_FILE.exists():
         with open(STATE_FILE) as f:
             st = json.load(f)
+        if "account_a" not in st or "account_b" not in st:
+            return {
+                "account_a":   make_account("M1 (40EUR)",  CAPITAL_A),
+                "account_b":   make_account("S4 (160EUR)", CAPITAL_B),
+                "last_signal": 0,
+                "last_run":    None,
+                "runs":        0,
+                "live":        _make_live_state(),
+            }
         for acc in [st["account_a"], st["account_b"]]:
             acc.setdefault("equity_history", [])
         st.setdefault("live", _make_live_state())
