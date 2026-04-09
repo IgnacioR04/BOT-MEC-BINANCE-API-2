@@ -26,50 +26,47 @@
   /* ── Header ── */
   header { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   .header-left { display: flex; align-items: center; gap: 10px; }
-  .logo { font-size: 15px; font-weight: 700; letter-spacing: .3px; }
+  .logo { font-size: 16px; font-weight: 600; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .run-badge { font-size: 11px; color: var(--muted); background: var(--bg3); padding: 3px 9px; border-radius: 4px; border: 1px solid var(--border); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .header-right { display: flex; align-items: center; gap: 14px; }
+  .run-counter { font-size: 12px; color: var(--muted); }
   .updated { font-size: 12px; color: var(--muted); }
-  .live-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 4px; }
-  .live-on  { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
-  .live-off { background: rgba(100,100,100,.1); color: var(--muted); border: 1px solid var(--border); }
 
-  main { padding: 16px 20px; max-width: 1140px; margin: 0 auto; }
+  main { padding: 16px 20px; max-width: 1100px; margin: 0 auto; }
 
   /* ── BTC bar ── */
-  .btc-bar { display: flex; align-items: center; gap: 20px; padding: 14px 18px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; flex-wrap: wrap; }
+  .btc-bar { display: flex; align-items: center; gap: 20px; padding: 14px 18px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; flex-wrap: wrap; }
   .btc-price { font-size: 28px; font-weight: 700; }
-  .btc-change { font-size: 15px; font-weight: 600; }
+  .btc-change { font-size: 14px; font-weight: 600; }
   .signal-pill { padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
   .signal-long   { background: rgba(34,197,94,.15);  color: var(--green); }
   .signal-short  { background: rgba(239,68,68,.15);  color: var(--red);   }
   .signal-neutral{ background: rgba(136,136,136,.15);color: var(--muted); }
   .btc-label { font-size: 12px; color: var(--muted); }
 
-  /* ── Portfolio total ── */
-  .portfolio-total { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 14px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
-  .port-equity { font-size: 24px; font-weight: 700; }
+  /* ── Resumen balance ── */
+  .balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .balance-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+  .balance-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .balance-value { font-size: 22px; font-weight: 700; }
 
-  /* ── Balance Bitget ── */
-  .bitget-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 10px; margin-bottom: 14px; }
-  .bitget-card { background: var(--bg2); border: 1px solid rgba(34,197,94,.2); border-radius: var(--radius); padding: 12px 14px; }
-  .bitget-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  .bitget-value { font-size: 20px; font-weight: 700; }
+  /* ── Posición abierta ── */
+  .position-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; border-left: 4px solid var(--amber); }
+  .position-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .position-title { font-size: 13px; font-weight: 600; color: var(--amber); }
+  .position-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .pos-item { background: var(--bg3); border-radius: 6px; padding: 10px 12px; }
+  .pos-item-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .pos-item-value { font-size: 15px; font-weight: 600; }
 
-  /* ── Grid cuentas ── */
-  .accounts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 14px; margin-bottom: 14px; }
+  /* ── Cuentas grid ── */
+  .accounts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 16px; }
   .account-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  .account-card.accent-a  { border-top: 3px solid var(--blue); }
-  .account-card.accent-b  { border-top: 3px solid var(--green); }
-  .account-card.accent-la { border-top: 3px solid var(--amber); }
-  .account-card.accent-lb { border-top: 3px solid var(--purple); }
+  .account-card.accent-a { border-top: 3px solid var(--blue); }
+  .account-card.accent-b { border-top: 3px solid var(--green); }
   .acc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .acc-name { font-size: 13px; font-weight: 600; }
-  .acc-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 3px; margin-left: 6px; }
-  .tag-live  { background: rgba(34,197,94,.15);  color: var(--green); }
-  .tag-paper { background: rgba(100,100,100,.12); color: var(--muted); }
   .acc-equity { font-size: 22px; font-weight: 700; }
   .acc-pnl { font-size: 13px; font-weight: 500; }
   .acc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
@@ -77,57 +74,47 @@
   .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 3px; }
   .stat-value { font-size: 14px; font-weight: 500; }
 
-  /* ── Posición ── */
-  .position-box { margin-top: 12px; background: var(--bg3); border-radius: 8px; padding: 10px 12px; border-left: 3px solid var(--amber); }
-  .pos-header { font-size: 11px; color: var(--amber); font-weight: 600; margin-bottom: 6px; }
-  .pos-row { display: flex; justify-content: space-between; font-size: 12px; padding: 2px 0; }
-  .pos-label { color: var(--muted); }
+  /* ── Sin posición ── */
+  .no-position { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; text-align: center; color: var(--muted); font-size: 13px; }
 
   /* ── Gráficas ── */
-  .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
-  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .chart-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--muted); }
   .chart-wrap { position: relative; height: 200px; }
-  .chart-wrap-md { position: relative; height: 170px; }
-  .tabs { display: flex; gap: 6px; }
-  .tab { padding: 3px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); }
-  .tab.active { background: var(--bg3); color: var(--text); border-color: var(--muted); }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-
-  /* ── Winrate barra ── */
-  .wr-row { margin-bottom: 10px; }
-  .wr-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-  .wr-bar { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
-  .wr-fill { height: 100%; border-radius: 3px; }
+  .chart-wrap-sm { position: relative; height: 160px; }
 
   /* ── Tabla trades ── */
-  .trades-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
-  .trades-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .trades-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+  .trades-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .trades-title { font-size: 13px; font-weight: 600; }
   .tab-row { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .tab { padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); }
+  .tab.active { background: var(--bg3); color: var(--text); border-color: var(--text); }
   table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { text-align: left; padding: 6px 8px; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 500; font-size: 11px; }
+  th { text-align: left; padding: 6px 8px; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 500; }
   td { padding: 7px 8px; border-bottom: 1px solid rgba(255,255,255,.04); }
   tr:last-child td { border-bottom: none; }
-  .badge { padding: 2px 7px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+  .badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
   .badge-long  { background: rgba(34,197,94,.15);  color: var(--green); }
-  .badge-short { background: rgba(239,68,68,.15);  color: var(--red);   }
-  .badge-tp    { background: rgba(34,197,94,.1);   color: var(--green); }
-  .badge-sl    { background: rgba(239,68,68,.1);   color: var(--red);   }
-  .badge-time  { background: rgba(136,136,136,.1); color: var(--muted); }
+  .badge-short { background: rgba(239,68,68,.15);  color: var(--red); }
+  .badge-tp    { background: rgba(34,197,94,.1);   color: var(--green); font-size: 10px; }
+  .badge-sl    { background: rgba(239,68,68,.1);   color: var(--red);   font-size: 10px; }
+  .badge-time  { background: rgba(136,136,136,.1); color: var(--muted); font-size: 10px; }
 
   /* ── Señales ── */
-  .signals-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+  .signals-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
   .sig-list { display: flex; flex-wrap: wrap; gap: 8px; }
   .sig-item { background: var(--bg3); border-radius: 6px; padding: 6px 10px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
-  .sig-dot-l { width:6px;height:6px;border-radius:50%;background:var(--green); }
-  .sig-dot-s { width:6px;height:6px;border-radius:50%;background:var(--red); }
+  .sig-dot-l { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+  .sig-dot-s { width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+
+  /* ── Sin datos live ── */
+  .no-live { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 16px; }
 
   /* ── Utilidades ── */
-  .green { color: var(--green); } .red { color: var(--red); } .muted { color: var(--muted); } .amber { color: var(--amber); } .blue { color: var(--blue); }
-  .section-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; margin-top: 4px; }
-  .spinner { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
-  @media(max-width:640px) { main{padding:12px} .btc-price{font-size:22px} .port-equity{font-size:20px} .grid-2,.grid-3{grid-template-columns:1fr} table th:nth-child(5),table td:nth-child(5){display:none} }
+  .green { color: var(--green); } .red { color: var(--red); } .muted { color: var(--muted); } .amber { color: var(--amber); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+  @media(max-width:600px) { main{padding:12px} .btc-price{font-size:22px} .grid-2{grid-template-columns:1fr} table th:nth-child(4),table td:nth-child(4){display:none} }
 </style>
 </head>
 <body>
@@ -136,33 +123,29 @@
   <div class="header-left">
     <div class="dot" id="liveDot"></div>
     <span class="logo">MEC BOT</span>
-    <span class="live-badge live-off" id="liveBadge">PAPER</span>
   </div>
   <div class="header-right">
-    <span class="run-badge">Ejecuciones: <span id="runCount">—</span></span>
+    <span class="run-counter" id="runCounter">Ejecuciones: —</span>
     <span class="updated" id="updatedAt">Cargando...</span>
   </div>
 </header>
 
 <main id="app">
-  <div class="spinner">Cargando datos...</div>
+  <div style="text-align:center;padding:40px;color:var(--muted)">Cargando datos...</div>
 </main>
 
 <script>
 const DATA_URL = 'data.json';
 let charts = {};
-let activeTab = 'b';
-let pnlPeriod = '30d';
+let activeTradeTab = 'b';
 let D = null;
 
-// ── Utilidades ────────────────────────────────────────────────────────────────
-const fmt   = (n, d=2) => n == null ? '—' : Number(n).toFixed(d);
-const fmtN  = n => n == null ? '—' : Number(n).toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
-const fmtE  = n => n == null ? '—' : (Number(n)>=0?'+':'') + Number(n).toFixed(4) + '€';
-const fmtU  = n => n == null ? '—' : (Number(n)>=0?'+':'') + Number(n).toFixed(4) + ' USDT';
-const fmtPct= n => n == null ? '—' : (Number(n)>=0?'+':'') + Number(n).toFixed(2) + '%';
-const cc    = n => Number(n) >= 0 ? 'green' : 'red';
-const ds    = iso => iso ? iso.slice(0,10) : '—';
+const fmt    = (n, d=2) => n == null ? '—' : Number(n).toFixed(d);
+const fmtN   = n => n == null ? '—' : Number(n).toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtPct = n => n == null ? '—' : (Number(n)>=0?'+':'')+Number(n).toFixed(2)+'%';
+const fmtU   = (n, sign=true) => n == null ? '—' : (sign&&Number(n)>=0?'+':'')+Number(n).toFixed(4)+' USDT';
+const cc     = n => Number(n) >= 0 ? 'green' : 'red';
+const ds     = iso => iso ? iso.slice(0,10) : '—';
 function timeAgo(iso) {
   if (!iso) return '';
   const d = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -170,28 +153,179 @@ function timeAgo(iso) {
   if (d < 3600) return `hace ${Math.round(d/60)}min`;
   return `hace ${Math.round(d/3600)}h`;
 }
-function filterDays(arr, period, dateKey='ts') {
-  if (!arr || !arr.length) return arr || [];
-  if (period === 'all') return arr;
-  const days = parseInt(period);
-  const cutoff = Date.now() - days * 86400000;
-  return arr.filter(x => new Date(x[dateKey] || x.ts || x.date) >= cutoff);
-}
 
-// ── Gráficas ──────────────────────────────────────────────────────────────────
+// ── Helpers gráficas ──────────────────────────────────────────────────────────
 const baseOpts = {
   responsive: true, maintainAspectRatio: false, animation: false,
   plugins: { legend: { display: false } },
   scales: {
-    x: { ticks: { color:'#666', maxTicksLimit:7, font:{size:10} }, grid: { color:'#1e1e1e' } },
-    y: { ticks: { color:'#666', font:{size:10} }, grid: { color:'#1e1e1e' } },
+    x: { ticks:{color:'#666',maxTicksLimit:7,font:{size:10}}, grid:{color:'#1e1e1e'} },
+    y: { ticks:{color:'#666',font:{size:10}}, grid:{color:'#1e1e1e'} },
   }
 };
 function mkChart(id, cfg) {
+  if (!document.getElementById(id)) return;
   if (charts[id]) charts[id].destroy();
   charts[id] = new Chart(document.getElementById(id).getContext('2d'), cfg);
 }
 
+// ── Render señal ──────────────────────────────────────────────────────────────
+function renderSignal(sig) {
+  if (sig==='LONG')  return `<span class="signal-pill signal-long">▲ LONG</span>`;
+  if (sig==='SHORT') return `<span class="signal-pill signal-short">▼ SHORT</span>`;
+  return `<span class="signal-pill signal-neutral">— neutral</span>`;
+}
+
+// ── Render posición live abierta ──────────────────────────────────────────────
+function renderOpenPosition(d) {
+  const posA = d.live_a?.position;
+  const posB = d.live_b?.position;
+  const pos  = posA || posB;
+
+  if (!pos) {
+    return `<div class="no-position">Sin posición abierta en Bitget actualmente</div>`;
+  }
+
+  const sc = pos.side === 'LONG' ? 'green' : 'red';
+  const pnlPct = pos.unreal_pct ?? 0;
+  const currentBtc = d.btc_price || 0;
+  const distToSL = pos.side === 'LONG'
+    ? ((pos.sl_px - currentBtc) / currentBtc * 100)
+    : ((currentBtc - pos.sl_px) / currentBtc * 100);
+  const distToTP = pos.side === 'LONG'
+    ? ((pos.tp_px - currentBtc) / currentBtc * 100)
+    : ((currentBtc - pos.tp_px) / currentBtc * 100);
+
+  return `
+    <div class="position-card">
+      <div class="position-header">
+        <span class="position-title">▶ POSICIÓN ABIERTA EN BITGET</span>
+        <span class="${sc}" style="font-size:18px;font-weight:700">${pos.side}</span>
+      </div>
+      <div class="position-grid">
+        <div class="pos-item">
+          <div class="pos-item-label">Precio entrada</div>
+          <div class="pos-item-value">$${fmt(pos.entry_px, 0)}</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Precio actual</div>
+          <div class="pos-item-value">$${fmtN(currentBtc)}</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Stop Loss</div>
+          <div class="pos-item-value red">$${fmt(pos.sl_px, 0)} <span style="font-size:11px;color:var(--muted)">(${fmt(distToSL,1)}%)</span></div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Take Profit</div>
+          <div class="pos-item-value green">$${fmt(pos.tp_px, 0)} <span style="font-size:11px;color:var(--muted)">(${fmt(distToTP,1)}%)</span></div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Apalancamiento</div>
+          <div class="pos-item-value">${pos.leverage}×</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Margen usado</div>
+          <div class="pos-item-value">${fmt(pos.margin_usdt, 2)} USDT</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Nocional</div>
+          <div class="pos-item-value">${fmt(pos.notional, 2)} USDT</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">PnL no realizado</div>
+          <div class="pos-item-value ${cc(pnlPct)}">${fmtPct(pnlPct)}</div>
+        </div>
+        <div class="pos-item">
+          <div class="pos-item-label">Abierto</div>
+          <div class="pos-item-value muted" style="font-size:13px">${ds(pos.open_date)}</div>
+        </div>
+        ${pos.order_id ? `<div class="pos-item"><div class="pos-item-label">Order ID</div><div class="pos-item-value muted" style="font-size:11px;word-break:break-all">${pos.order_id}</div></div>` : ''}
+      </div>
+    </div>`;
+}
+
+// ── Render cuentas live ───────────────────────────────────────────────────────
+function renderLiveAccounts(d) {
+  function card(acc, accent) {
+    const pnl = acc.total_pnl_usdt || 0;
+    const eq  = acc.equity || 0;
+    return `
+      <div class="account-card ${accent}">
+        <div class="acc-header">
+          <div>
+            <div class="acc-name">${acc.name}</div>
+            <div class="acc-equity" style="margin-top:4px">${fmt(eq,2)} USDT</div>
+          </div>
+          <div style="text-align:right">
+            <div class="acc-pnl ${cc(pnl)}">${fmtU(pnl)}</div>
+          </div>
+        </div>
+        <div class="acc-stats">
+          <div class="stat-box"><div class="stat-label">Trades cerrados</div><div class="stat-value">${acc.num_trades||0}</div></div>
+          <div class="stat-box"><div class="stat-label">Win rate</div><div class="stat-value">${fmt(acc.win_rate,1)}%</div></div>
+          <div class="stat-box"><div class="stat-label">Split del balance</div><div class="stat-value">${((acc.split_pct||0)*100).toFixed(0)}%</div></div>
+          <div class="stat-box"><div class="stat-label">Disponible</div><div class="stat-value">${fmt(acc.available,2)} USDT</div></div>
+        </div>
+      </div>`;
+  }
+  return `
+    <div class="accounts-grid">
+      ${card(d.live_a, 'accent-a')}
+      ${card(d.live_b, 'accent-b')}
+    </div>`;
+}
+
+// ── Tabla historial trades ────────────────────────────────────────────────────
+function renderTradesTable(trades) {
+  if (!trades || !trades.length) {
+    return `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin trades cerrados aún — la primera operación aparecerá aquí cuando se cierre por TP o SL</div>`;
+  }
+  const rev = [...trades].reverse();
+  const rows = rev.map(t => {
+    const pnl = t.pnl_usdt || 0;
+    const sc  = t.side==='LONG' ? 'badge-long' : 'badge-short';
+    const rc  = t.exit_reason==='TP_SL_BITGET' ? 'badge-tp' : t.exit_reason==='SL' ? 'badge-sl' : 'badge-time';
+    return `<tr>
+      <td class="muted">${ds(t.close_date)}</td>
+      <td><span class="badge ${sc}">${t.side||'—'}</span></td>
+      <td>$${fmt(t.entry_px,0)}</td>
+      <td>${fmt(t.leverage,1)}×</td>
+      <td>${fmt(t.margin_usdt,2)} USDT</td>
+      <td class="${cc(pnl)}" style="font-weight:500">${fmtU(pnl)}</td>
+      <td><span class="badge ${rc}">${t.exit_reason||'—'}</span></td>
+    </tr>`;
+  }).join('');
+  return `
+    <table>
+      <thead><tr><th>Fecha</th><th>Dir.</th><th>Entrada</th><th>Lev.</th><th>Margen</th><th>PnL</th><th>Motivo</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Gráfica equity Bitget ─────────────────────────────────────────────────────
+function drawEquityChart(d) {
+  const hA = d.live_a?.equity_history || [];
+  const hB = d.live_b?.equity_history || [];
+  if (!hA.length && !hB.length) return;
+  const labels = (hA.length >= hB.length ? hA : hB).map(p => p.ts.slice(0,16).replace('T',' '));
+  mkChart('equityChart', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label:'M1 (20%)', data:hA.map(p=>p.equity), borderColor:'#3b82f6', borderWidth:2, pointRadius:0, tension:.1, fill:false, borderDash:[4,2] },
+        { label:'S4 (80%)', data:hB.map(p=>p.equity), borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.1, fill:false },
+      ]
+    },
+    options: {
+      ...baseOpts,
+      plugins: { legend:{ display:true, labels:{color:'#888',font:{size:11}} } },
+      scales: { ...baseOpts.scales, y:{ ...baseOpts.scales.y, ticks:{color:'#666',font:{size:10},callback:v=>v.toFixed(2)+' USDT'} } }
+    }
+  });
+}
+
+// ── Gráfica BTC + señales ─────────────────────────────────────────────────────
 function drawPriceChart(ph, sh) {
   if (!ph || !ph.length) return;
   const sigMap = {};
@@ -206,256 +340,83 @@ function drawPriceChart(ph, sh) {
         { label:'SHORT', data:ph.map(p=>sigMap[p.date]==='SHORT'?p.close:null), backgroundColor:'#ef4444', pointRadius:7, pointStyle:'triangle', rotation:180, showLine:false, borderColor:'transparent' },
       ]
     },
-    options: { ...baseOpts, plugins: { legend:{display:false} }, scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, ticks: { color:'#666', font:{size:10}, callback: v=>'$'+Number(v).toLocaleString() } } } }
+    options: {
+      ...baseOpts,
+      scales: { ...baseOpts.scales, y:{ ...baseOpts.scales.y, ticks:{color:'#666',font:{size:10},callback:v=>'$'+Number(v).toLocaleString()} } }
+    }
   });
-}
-
-function drawEquityChart(d) {
-  const hA = d.account_a?.equity_history || [];
-  const hB = d.account_b?.equity_history || [];
-  const hLA = d.live_a?.equity_history || [];
-  const hLB = d.live_b?.equity_history || [];
-  const labels = (hA.length >= hB.length ? hA : hB).map(p=>p.ts.slice(0,16).replace('T',' '));
-  const datasets = [
-    { label:d.account_a.name, data:hA.map(p=>p.equity), borderColor:'#3b82f6', borderWidth:2, pointRadius:0, tension:.1, fill:false, borderDash:[4,2] },
-    { label:d.account_b.name, data:hB.map(p=>p.equity), borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.1, fill:false },
-  ];
-  if (hLA.length) datasets.push({ label:'M1 Live', data:hLA.map(p=>p.equity), borderColor:'#f59e0b', borderWidth:1.5, pointRadius:0, tension:.1, fill:false });
-  if (hLB.length) datasets.push({ label:'S4 Live', data:hLB.map(p=>p.equity), borderColor:'#a78bfa', borderWidth:1.5, pointRadius:0, tension:.1, fill:false });
-  mkChart('equityChart', {
-    type: 'line',
-    data: { labels, datasets },
-    options: { ...baseOpts, plugins: { legend:{ display:true, labels:{color:'#888',font:{size:10}} } }, scales: { ...baseOpts.scales, y:{ ...baseOpts.scales.y, ticks:{color:'#666',font:{size:10},callback:v=>'€'+Number(v).toFixed(2)} } } }
-  });
-}
-
-function drawPnlChart(d, period) {
-  // Agrupa trades por dia
-  function groupByDay(trades, key='pnl_net') {
-    const m = {};
-    (trades||[]).forEach(t => {
-      const day = (t.close_date||'').slice(0,10);
-      if (!day || day==='None') return;
-      m[day] = (m[day]||0) + (t[key]||0);
-    });
-    return m;
-  }
-  const dA = groupByDay(d.account_a?.trades, 'pnl_net');
-  const dB = groupByDay(d.account_b?.trades, 'pnl_net');
-  const dLA= groupByDay(d.live_a?.trades, 'pnl_usdt');
-  const dLB= groupByDay(d.live_b?.trades, 'pnl_usdt');
-
-  const days = period==='all' ? 9999 : parseInt(period);
-  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-days);
-  const allDates = [...new Set([
-    ...Object.keys(dA), ...Object.keys(dB),
-    ...Object.keys(dLA), ...Object.keys(dLB)
-  ])].filter(d=> period==='all' || new Date(d)>=cutoff).sort();
-
-  if (!allDates.length) return;
-  mkChart('pnlChart', {
-    type: 'bar',
-    data: {
-      labels: allDates,
-      datasets: [
-        { label:'M1 Paper', data:allDates.map(d=>dA[d]||0), backgroundColor:allDates.map(d=>(dA[d]||0)>=0?'rgba(59,130,246,.7)':'rgba(239,68,68,.6)') },
-        { label:'S4 Paper', data:allDates.map(d=>dB[d]||0), backgroundColor:allDates.map(d=>(dB[d]||0)>=0?'rgba(34,197,94,.7)':'rgba(239,68,68,.5)') },
-        ...(Object.keys(dLA).length ? [{ label:'Live', data:allDates.map(d=>(dLA[d]||0)+(dLB[d]||0)), backgroundColor:allDates.map(d=>((dLA[d]||0)+(dLB[d]||0))>=0?'rgba(245,158,11,.8)':'rgba(239,68,68,.7)') }] : []),
-      ]
-    },
-    options: { ...baseOpts, plugins:{ legend:{display:true,labels:{color:'#888',font:{size:10}}}, tooltip:{mode:'index',intersect:false} } }
-  });
-}
-
-function drawDrawdownChart(d) {
-  function calcDD(hist) {
-    if (!hist||!hist.length) return [];
-    let peak = hist[0].equity;
-    return hist.map(h => { if(h.equity>peak) peak=h.equity; return peak>0 ? (h.equity-peak)/peak*100 : 0; });
-  }
-  const hA = d.account_a?.equity_history||[];
-  const hB = d.account_b?.equity_history||[];
-  const labels = (hA.length>=hB.length?hA:hB).map(p=>p.ts.slice(0,10));
-  mkChart('ddChart', {
-    type:'line',
-    data:{
-      labels,
-      datasets:[
-        {label:'M1 Paper',data:calcDD(hA),borderColor:'#3b82f6',borderWidth:1.5,pointRadius:0,tension:.1,fill:true,backgroundColor:'rgba(59,130,246,.06)'},
-        {label:'S4 Paper',data:calcDD(hB),borderColor:'#22c55e',borderWidth:1.5,pointRadius:0,tension:.1,fill:true,backgroundColor:'rgba(34,197,94,.06)'},
-      ]
-    },
-    options:{...baseOpts,plugins:{legend:{display:true,labels:{color:'#888',font:{size:10}}}},scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{color:'#666',font:{size:10},callback:v=>v.toFixed(1)+'%'}}}}
-  });
-}
-
-// ── Render posición ───────────────────────────────────────────────────────────
-function renderPos(pos, isLive) {
-  if (!pos) return `<div style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center;padding:8px 0">Sin posición abierta</div>`;
-  const sc = pos.side==='LONG'?'green':'red';
-  const pnlKey = isLive ? (pos.unreal_pct!=null?`<div class="pos-row"><span class="pos-label">PnL no real.</span><span class="${cc(pos.unreal_pct)} " style="font-weight:600">${fmtPct(pos.unreal_pct)}</span></div>` : '') :
-    `<div class="pos-row"><span class="pos-label">PnL no real.</span><span class="${cc(pos.pnl_unreal)}" style="font-weight:600">${fmtE(pos.pnl_unreal)} (${fmtPct(pos.pnl_unreal_pct)})</span></div>`;
-  return `
-    <div class="position-box">
-      <div class="pos-header">POSICIÓN ABIERTA</div>
-      <div class="pos-row"><span class="pos-label">Dirección</span><span class="${sc}" style="font-weight:600">${pos.side}</span></div>
-      <div class="pos-row"><span class="pos-label">Entrada</span><span>$${fmt(pos.entry_px,0)}</span></div>
-      <div class="pos-row"><span class="pos-label">Stop Loss</span><span class="red">$${fmt(pos.sl_px,0)}</span></div>
-      <div class="pos-row"><span class="pos-label">Take Profit</span><span class="green">$${fmt(pos.tp_px,0)}</span></div>
-      <div class="pos-row"><span class="pos-label">Apalancamiento</span><span>${pos.leverage}×</span></div>
-      ${isLive && pos.margin_usdt ? `<div class="pos-row"><span class="pos-label">Margen</span><span>${fmt(pos.margin_usdt,2)} USDT</span></div>` : ''}
-      ${pnlKey}
-      <div class="pos-row"><span class="pos-label">Abierto</span><span class="muted">${ds(pos.open_date)}</span></div>
-    </div>`;
-}
-
-// ── Render cuenta ─────────────────────────────────────────────────────────────
-function renderAcc(acc, accent, isLive) {
-  if (!acc) return '';
-  const pnl = isLive ? acc.total_pnl_usdt||0 : acc.total_pnl||0;
-  const eq  = acc.equity||0;
-  const ini = acc.initial||0;
-  const pct = isLive ? '' : fmtPct(acc.total_pnl_pct);
-  const tag = isLive ? '<span class="acc-tag tag-live">LIVE</span>' : '<span class="acc-tag tag-paper">PAPER</span>';
-  const eqStr = isLive ? `${fmt(eq,2)} USDT` : `€${fmt(eq,2)}`;
-  const pnlStr= isLive ? fmtU(pnl) : fmtE(pnl);
-  return `
-    <div class="account-card ${accent}">
-      <div class="acc-header">
-        <div><div class="acc-name">${acc.name}${tag}</div><div class="acc-equity" style="margin-top:4px">${eqStr}</div></div>
-        <div style="text-align:right">
-          <div class="acc-pnl ${cc(pnl)}">${pnlStr}</div>
-          ${pct ? `<div class="acc-pnl ${cc(pnl)}" style="font-size:12px">${pct}</div>` : ''}
-        </div>
-      </div>
-      <div class="acc-stats">
-        <div class="stat-box"><div class="stat-label">Trades</div><div class="stat-value">${acc.num_trades||0}</div></div>
-        <div class="stat-box"><div class="stat-label">Win rate</div><div class="stat-value">${fmt(acc.win_rate,1)}%</div></div>
-        ${!isLive ? `<div class="stat-box"><div class="stat-label">Capital inicial</div><div class="stat-value">€${fmt(ini,2)}</div></div>` : `<div class="stat-box"><div class="stat-label">Split</div><div class="stat-value">${((acc.split_pct||0)*100).toFixed(0)}%</div></div>`}
-        ${!isLive ? `<div class="stat-box"><div class="stat-label">Cash disponible</div><div class="stat-value">€${fmt(acc.cash,2)}</div></div>` : `<div class="stat-box"><div class="stat-label">Disponible</div><div class="stat-value">${fmt(acc.available,2)} USDT</div></div>`}
-      </div>
-      ${renderPos(acc.position, isLive)}
-    </div>`;
-}
-
-// ── Render trades tabla ───────────────────────────────────────────────────────
-function renderTradesTable(trades, isLive) {
-  if (!trades || !trades.length) return `<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Sin trades cerrados aún</div>`;
-  const rev = [...trades].reverse();
-  const rows = rev.map(t => {
-    const pnl  = isLive ? t.pnl_usdt||0 : t.pnl_net||0;
-    const pctV = isLive ? '' : fmtPct(t.pnl_pct);
-    const unit = isLive ? ' USDT' : '€';
-    const sc   = t.side==='LONG'?'badge-long':'badge-short';
-    const rc   = t.exit_reason==='TP'?'badge-tp':t.exit_reason==='SL'?'badge-sl':'badge-time';
-    return `<tr>
-      <td class="muted">${ds(t.close_date)}</td>
-      <td><span class="badge ${sc}">${t.side||'—'}</span></td>
-      <td>$${fmt(t.entry_px,0)} → ${t.exit_px ? '$'+fmt(t.exit_px,0) : '—'}</td>
-      <td class="${cc(pnl)}" style="font-weight:500">${(pnl>=0?'+':'')+pnl.toFixed(4)}${unit}</td>
-      ${!isLive ? `<td class="${cc(pnl)}">${pctV}</td>` : ''}
-      <td><span class="badge ${rc}">${t.exit_reason||'—'}</span></td>
-    </tr>`;
-  }).join('');
-  return `<table><thead><tr><th>Fecha</th><th>Dir.</th><th>Entrada → Salida</th><th>PnL</th>${!isLive?'<th>%</th>':''}<th>Motivo</th></tr></thead><tbody>${rows}</tbody></table>`;
-}
-
-// ── Render winrate ────────────────────────────────────────────────────────────
-function renderWinrate(d) {
-  const items = [
-    {label:'M1 (paper)', wr:d.account_a?.win_rate||0, n:d.account_a?.num_trades||0, color:'#3b82f6'},
-    {label:'S4 (paper)', wr:d.account_b?.win_rate||0, n:d.account_b?.num_trades||0, color:'#22c55e'},
-  ];
-  if (d.live_mode) {
-    items.push({label:'M1 Live', wr:d.live_a?.win_rate||0, n:d.live_a?.num_trades||0, color:'#f59e0b'});
-    items.push({label:'S4 Live', wr:d.live_b?.win_rate||0, n:d.live_b?.num_trades||0, color:'#a78bfa'});
-  }
-  return items.map(it=>`
-    <div class="wr-row">
-      <div class="wr-header"><span class="muted">${it.label}</span><span style="font-weight:600">${it.wr.toFixed(1)}% <span class="muted">(${it.n})</span></span></div>
-      <div class="wr-bar"><div class="wr-fill" style="width:${Math.min(it.wr,100)}%;background:${it.wr>=50?it.color:'var(--red)'}"></div></div>
-    </div>`).join('');
-}
-
-// ── Render retornos ───────────────────────────────────────────────────────────
-function renderRetornos(d) {
-  const items = [
-    {label:'M1 (paper)', val:d.account_a?.total_pnl_pct||0, unit:'%'},
-    {label:'S4 (paper)', val:d.account_b?.total_pnl_pct||0, unit:'%'},
-  ];
-  if (d.live_mode) {
-    items.push({label:'M1 Live', val:d.live_a?.total_pnl_usdt||0, unit:' USDT'});
-    items.push({label:'S4 Live', val:d.live_b?.total_pnl_usdt||0, unit:' USDT'});
-  }
-  return items.map(it=>`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-      <span class="muted" style="font-size:12px">${it.label}</span>
-      <span style="font-size:15px;font-weight:700;color:${it.val>=0?'var(--green)':'var(--red)'}">${it.val>=0?'+':''}${it.val.toFixed(2)}${it.unit}</span>
-    </div>`).join('');
 }
 
 // ── Render principal ──────────────────────────────────────────────────────────
 function render(d) {
   D = d;
-  // Header
-  document.getElementById('runCount').textContent = d.runs||'—';
-  document.getElementById('updatedAt').textContent = 'Actualizado ' + timeAgo(d.updated_at);
-  const badge = document.getElementById('liveBadge');
-  badge.textContent = d.live_mode ? 'LIVE' : 'PAPER';
-  badge.className = 'live-badge ' + (d.live_mode ? 'live-on' : 'live-off');
 
-  const portPnl = (d.portfolio_equity||0) - (d.portfolio_initial||0);
-  const portPct = d.portfolio_initial ? (portPnl/d.portfolio_initial)*100 : 0;
+  document.getElementById('runCounter').textContent = `# Ejecuciones: ${d.runs||0}`;
+  document.getElementById('updatedAt').textContent  = 'Actualizado ' + timeAgo(d.updated_at);
+
   const chClass = (d.btc_change_24h||0) >= 0 ? 'green' : 'red';
+  const balance = d.live_balance || {};
+  const eq      = balance.equity || 0;
+  const avail   = balance.available || 0;
+  const unreal  = balance.unrealized_pl || 0;
+  const totalPnl= (d.live_a?.total_pnl_usdt||0) + (d.live_b?.total_pnl_usdt||0);
 
-  // Bitget live trades tab
-  const tradesA = d.account_a?.trades||[];
-  const tradesB = d.account_b?.trades||[];
-  const liveTradesA = d.live_a?.trades||[];
-  const liveTradesB = d.live_b?.trades||[];
-  const tabTrades = activeTab==='b'?tradesB:activeTab==='a'?tradesA:activeTab==='lb'?liveTradesB:liveTradesA;
-  const tabIsLive = activeTab==='la'||activeTab==='lb';
+  const liveTradesA = d.live_a?.trades || [];
+  const liveTradesB = d.live_b?.trades || [];
+  const tabTrades   = activeTradeTab === 'b' ? liveTradesB : liveTradesA;
+
+  // Si no hay modo live activo
+  if (!d.live_mode) {
+    document.getElementById('app').innerHTML = `
+      <div class="no-live">
+        <div style="font-size:24px;margin-bottom:10px">🔌</div>
+        <div style="font-size:15px;font-weight:600;margin-bottom:6px">Modo live no activo</div>
+        <div>Añade BITGET_API_KEY, BITGET_API_SECRET y BITGET_PASSPHRASE como GitHub Secrets para activar el trading real.</div>
+      </div>`;
+    return;
+  }
 
   document.getElementById('app').innerHTML = `
 
-    <!-- BTC -->
+    <!-- BTC precio y señal -->
     <div class="btc-bar">
-      <div><div class="btc-label">BTC / USD</div><div class="btc-price">$${Number(d.btc_price||0).toLocaleString('es-ES',{minimumFractionDigits:2})}</div></div>
+      <div>
+        <div class="btc-label">BTC / USD</div>
+        <div class="btc-price">$${Number(d.btc_price||0).toLocaleString('es-ES',{minimumFractionDigits:2})}</div>
+      </div>
       <div class="${chClass}" style="font-size:15px;font-weight:600">${(d.btc_change_24h>=0?'+':'')+fmt(d.btc_change_24h,2)}% hoy</div>
-      <div><div class="btc-label" style="margin-bottom:4px">Señal MEC actual</div>${renderSignal(d.current_signal)}</div>
-      ${d.last_signal_date?`<div class="muted" style="font-size:12px">Última señal: ${d.last_signal_date}</div>`:''}
-      <div style="margin-left:auto;font-size:12px;color:var(--muted)">Ejecución #${d.runs||0}</div>
+      <div>
+        <div class="btc-label" style="margin-bottom:4px">Señal MEC actual</div>
+        ${renderSignal(d.current_signal)}
+      </div>
+      ${d.last_signal_date ? `<div class="muted" style="font-size:12px">Última señal: ${d.last_signal_date}</div>` : ''}
     </div>
 
-    <!-- Portfolio total (paper) -->
-    <div class="portfolio-total">
-      <div><div style="font-size:12px;color:var(--muted);margin-bottom:4px">Portfolio total (paper)</div><div class="port-equity">€${fmtN(d.portfolio_equity)}</div></div>
-      <div><div class="${cc(portPnl)}" style="font-size:18px;font-weight:600">${fmtE(portPnl)}</div><div class="${cc(portPnl)}" style="font-size:14px">${fmtPct(portPct)}</div></div>
-      <div style="font-size:12px;color:var(--muted)">Capital inicial: €${fmtN(d.portfolio_initial)}</div>
-    </div>
-
-    ${d.live_mode && d.live_balance ? `
     <!-- Balance Bitget -->
-    <div class="section-label">Balance Bitget (real)</div>
-    <div class="bitget-bar">
-      <div class="bitget-card"><div class="bitget-label">Equity total</div><div class="bitget-value">${fmt(d.live_balance.equity,2)} <span style="font-size:12px;color:var(--muted)">USDT</span></div></div>
-      <div class="bitget-card"><div class="bitget-label">Disponible</div><div class="bitget-value">${fmt(d.live_balance.available,2)} <span style="font-size:12px;color:var(--muted)">USDT</span></div></div>
-      <div class="bitget-card"><div class="bitget-label">PnL no realizado</div><div class="bitget-value ${cc(d.live_balance.unrealized_pl)}">${(d.live_balance.unrealized_pl>=0?'+':'') + fmt(d.live_balance.unrealized_pl,4)} <span style="font-size:12px">USDT</span></div></div>
-      <div class="bitget-card"><div class="bitget-label">PnL realizado live</div><div class="bitget-value ${cc((d.live_a?.total_pnl_usdt||0)+(d.live_b?.total_pnl_usdt||0))}">${((d.live_a?.total_pnl_usdt||0)+(d.live_b?.total_pnl_usdt||0)>=0?'+':'')+fmt((d.live_a?.total_pnl_usdt||0)+(d.live_b?.total_pnl_usdt||0),4)} <span style="font-size:12px">USDT</span></div></div>
+    <div class="balance-grid">
+      <div class="balance-card">
+        <div class="balance-label">Equity total Bitget</div>
+        <div class="balance-value">${fmt(eq,2)} <span style="font-size:13px;color:var(--muted)">USDT</span></div>
+      </div>
+      <div class="balance-card">
+        <div class="balance-label">Disponible</div>
+        <div class="balance-value">${fmt(avail,2)} <span style="font-size:13px;color:var(--muted)">USDT</span></div>
+      </div>
+      <div class="balance-card">
+        <div class="balance-label">PnL no realizado</div>
+        <div class="balance-value ${cc(unreal)}">${(unreal>=0?'+':'')}${fmt(unreal,4)} <span style="font-size:13px">USDT</span></div>
+      </div>
+      <div class="balance-card">
+        <div class="balance-label">PnL realizado total</div>
+        <div class="balance-value ${cc(totalPnl)}">${(totalPnl>=0?'+':'')}${fmt(totalPnl,4)} <span style="font-size:13px">USDT</span></div>
+      </div>
     </div>
-    <!-- Cuentas live -->
-    <div class="section-label">Cuentas live (Bitget)</div>
-    <div class="accounts-grid">
-      ${renderAcc(d.live_a,'accent-la',true)}
-      ${renderAcc(d.live_b,'accent-lb',true)}
-    </div>` : ''}
 
-    <!-- Cuentas paper -->
-    <div class="section-label">Paper trading (simulado)</div>
-    <div class="accounts-grid">
-      ${renderAcc(d.account_a,'accent-a',false)}
-      ${renderAcc(d.account_b,'accent-b',false)}
-    </div>
+    <!-- Posición abierta -->
+    ${renderOpenPosition(d)}
+
+    <!-- Cuentas M1 y S4 -->
+    ${renderLiveAccounts(d)}
 
     <!-- Gráfica BTC + señales -->
     <div class="chart-card">
@@ -463,89 +424,46 @@ function render(d) {
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
     </div>
 
-    <!-- Equity + PnL diario -->
-    <div class="grid-2">
-      <div class="chart-card">
-        <div class="chart-title">Equity de las cuentas</div>
-        <div class="chart-wrap-md"><canvas id="equityChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">
-          PnL diario
-          <div class="tabs">
-            <button class="tab ${pnlPeriod==='7d'?'active':''}"  onclick="setPnl('7d')">7D</button>
-            <button class="tab ${pnlPeriod==='30d'?'active':''}" onclick="setPnl('30d')">1M</button>
-            <button class="tab ${pnlPeriod==='90d'?'active':''}" onclick="setPnl('90d')">3M</button>
-            <button class="tab ${pnlPeriod==='all'?'active':''}" onclick="setPnl('all')">Todo</button>
-          </div>
-        </div>
-        <div class="chart-wrap-md"><canvas id="pnlChart"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Drawdown + Win rate + Retornos -->
-    <div class="grid-3">
-      <div class="chart-card" style="grid-column:span 1">
-        <div class="chart-title">Drawdown desde máximos (%)</div>
-        <div class="chart-wrap-md"><canvas id="ddChart"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Win Rate</div>
-        <div>${renderWinrate(d)}</div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Retornos</div>
-        <div>${renderRetornos(d)}</div>
-      </div>
+    <!-- Equity Bitget -->
+    <div class="chart-card">
+      <div class="chart-title">Equity Bitget por estrategia</div>
+      <div class="chart-wrap-sm"><canvas id="equityChart"></canvas></div>
     </div>
 
     <!-- Historial de trades -->
     <div class="trades-card">
       <div class="trades-header">
-        <span class="trades-title">Historial de trades</span>
-        <span class="muted" style="font-size:12px">${tradesA.length+tradesB.length+liveTradesA.length+liveTradesB.length} total</span>
+        <span class="trades-title">Historial de operaciones en Bitget</span>
+        <span class="muted" style="font-size:12px">${liveTradesA.length + liveTradesB.length} operaciones cerradas</span>
       </div>
       <div class="tab-row">
-        <button class="tab ${activeTab==='b'?'active':''}"  onclick="setTab('b')">S4 paper (${tradesB.length})</button>
-        <button class="tab ${activeTab==='a'?'active':''}"  onclick="setTab('a')">M1 paper (${tradesA.length})</button>
-        ${d.live_mode?`<button class="tab ${activeTab==='lb'?'active':''}" onclick="setTab('lb')">S4 live (${liveTradesB.length})</button>
-        <button class="tab ${activeTab==='la'?'active':''}" onclick="setTab('la')">M1 live (${liveTradesA.length})</button>`:''}
+        <button class="tab ${activeTradeTab==='b'?'active':''}" onclick="setTab('b')">S4 — 80% (${liveTradesB.length})</button>
+        <button class="tab ${activeTradeTab==='a'?'active':''}" onclick="setTab('a')">M1 — 20% (${liveTradesA.length})</button>
       </div>
-      ${renderTradesTable(tabTrades, tabIsLive)}
+      ${renderTradesTable(tabTrades)}
     </div>
 
-    <!-- Señales MEC -->
+    <!-- Historial señales MEC -->
     <div class="signals-card">
-      <div style="font-size:13px;font-weight:600;margin-bottom:12px">Últimas señales detectadas</div>
-      <div class="sig-list">${renderSigList(d.signal_history)}</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px">Últimas señales MEC detectadas</div>
+      <div class="sig-list">
+        ${(d.signal_history||[]).slice().reverse().map(s=>`
+          <div class="sig-item">
+            <div class="${s.signal==='LONG'?'sig-dot-l':'sig-dot-s'}"></div>
+            <span style="font-weight:600;color:${s.signal==='LONG'?'var(--green)':'var(--red)'}">${s.signal}</span>
+            <span class="muted">${s.date}</span>
+            <span>$${Number(s.price).toLocaleString()}</span>
+          </div>`).join('') || '<div class="muted" style="font-size:12px">Sin señales registradas</div>'}
+      </div>
     </div>
+
   `;
 
-  // Dibujar gráficas
   drawPriceChart(d.price_history||[], d.signal_history||[]);
   drawEquityChart(d);
-  drawPnlChart(d, pnlPeriod);
-  drawDrawdownChart(d);
 }
 
-function renderSignal(sig) {
-  if (sig==='LONG')  return `<span class="signal-pill signal-long">▲ LONG</span>`;
-  if (sig==='SHORT') return `<span class="signal-pill signal-short">▼ SHORT</span>`;
-  return `<span class="signal-pill signal-neutral">— neutral</span>`;
-}
-function renderSigList(sigs) {
-  if (!sigs||!sigs.length) return '<div class="muted" style="font-size:12px">Sin señales registradas</div>';
-  return [...sigs].reverse().map(s=>`
-    <div class="sig-item">
-      <div class="${s.signal==='LONG'?'sig-dot-l':'sig-dot-s'}"></div>
-      <span style="font-weight:600;color:${s.signal==='LONG'?'var(--green)':'var(--red)'}">${s.signal}</span>
-      <span class="muted">${s.date}</span>
-      <span>$${Number(s.price).toLocaleString()}</span>
-    </div>`).join('');
-}
-
-window.setTab = t => { activeTab=t; if(D) render(D); };
-window.setPnl = p => { pnlPeriod=p; if(D){render(D);} };
+window.setTab = t => { activeTradeTab = t; if (D) render(D); };
 
 async function fetchData() {
   try {
