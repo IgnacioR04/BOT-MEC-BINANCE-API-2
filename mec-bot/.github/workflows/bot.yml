@@ -1,0 +1,49 @@
+name: MEC Paper Trading Bot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "* * * * *"
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+
+    permissions:
+      contents: write
+
+    env:
+      # Live trading Binance — el bot detecta automaticamente si estan presentes
+      BINANCE_API_KEY:    ${{ secrets.BINANCE_API_KEY }}
+      BINANCE_API_SECRET: ${{ secrets.BINANCE_API_SECRET }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt --quiet
+
+      - name: Run bot
+        run: python bot.py
+
+      - name: Commit and push data
+        run: |
+          git config user.name  "mec-bot"
+          git config user.email "mec-bot@noreply.github.com"
+          git add docs/data.json state.json
+          git stash
+          git pull --rebase origin main
+          git stash pop
+          git add docs/data.json state.json
+          git diff --cached --quiet || git commit -m "bot: update [$(date -u '+%H:%M:%S UTC')]"
+          git push
