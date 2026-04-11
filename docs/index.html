@@ -132,7 +132,6 @@
 <script>
 const DATA_URL = 'data.json';
 let charts = {};
-let activeTradeTab = 'b';
 let D = null;
 
 // Periodos activos por gráfica
@@ -190,9 +189,7 @@ function renderSignal(sig) {
 }
 
 function renderOpenPosition(d) {
-  const posA = d.live_a?.position;
-  const posB = d.live_b?.position;
-  const pos  = posA || posB;
+  const pos = d.live_s4?.position;
   if (!pos) return `<div class="no-position">Sin posición abierta en Bitget actualmente</div>`;
   const sc = pos.side === 'LONG' ? 'green' : 'red';
   const pnlPct = pos.unreal_pct ?? 0;
@@ -221,24 +218,22 @@ function renderOpenPosition(d) {
 }
 
 function renderLiveAccounts(d) {
-  function card(acc, accent) {
-    const pnl = acc.total_pnl_usdt || 0;
-    const eq  = acc.equity || 0;
-    return `
-      <div class="account-card ${accent}">
-        <div class="acc-header">
-          <div><div class="acc-name">${acc.name}</div><div class="acc-equity" style="margin-top:4px">${fmt(eq,2)} USDT</div></div>
-          <div style="text-align:right"><div class="acc-pnl ${cc(pnl)}">${fmtU(pnl)}</div></div>
-        </div>
-        <div class="acc-stats">
-          <div class="stat-box"><div class="stat-label">Trades cerrados</div><div class="stat-value">${acc.num_trades||0}</div></div>
-          <div class="stat-box"><div class="stat-label">Win rate</div><div class="stat-value">${fmt(acc.win_rate,1)}%</div></div>
-          <div class="stat-box"><div class="stat-label">Split del balance</div><div class="stat-value">${((acc.split_pct||0)*100).toFixed(0)}%</div></div>
-          <div class="stat-box"><div class="stat-label">Disponible</div><div class="stat-value">${fmt(acc.available,2)} USDT</div></div>
-        </div>
-      </div>`;
-  }
-  return `<div class="accounts-grid">${card(d.live_a,'accent-a')}${card(d.live_b,'accent-b')}</div>`;
+  const acc = d.live_s4 || {};
+  const pnl = acc.total_pnl_usdt || 0;
+  const eq  = acc.equity || 0;
+  return `
+    <div class="account-card accent-b" style="max-width:100%">
+      <div class="acc-header">
+        <div><div class="acc-name">${acc.name || 'S4-Live (100%)'}</div><div class="acc-equity" style="margin-top:4px">${fmt(eq,2)} USDT</div></div>
+        <div style="text-align:right"><div class="acc-pnl ${cc(pnl)}">${fmtU(pnl)}</div></div>
+      </div>
+      <div class="acc-stats">
+        <div class="stat-box"><div class="stat-label">Trades cerrados</div><div class="stat-value">${acc.num_trades||0}</div></div>
+        <div class="stat-box"><div class="stat-label">Win rate</div><div class="stat-value">${fmt(acc.win_rate,1)}%</div></div>
+        <div class="stat-box"><div class="stat-label">Capital</div><div class="stat-value">100%</div></div>
+        <div class="stat-box"><div class="stat-label">Disponible</div><div class="stat-value">${fmt(acc.available,2)} USDT</div></div>
+      </div>
+    </div>`;
 }
 
 function renderTradesTable(trades) {
@@ -263,17 +258,15 @@ function renderTradesTable(trades) {
 
 // ── Gráfica equity con filtro de periodo ──────────────────────────────────────
 function drawEquityChart(d) {
-  const hA = filterDays(d.live_a?.equity_history||[], periodEquity, 'ts');
-  const hB = filterDays(d.live_b?.equity_history||[], periodEquity, 'ts');
-  if (!hA.length && !hB.length) return;
-  const labels = (hA.length>=hB.length?hA:hB).map(p=>p.ts.slice(0,16).replace('T',' '));
+  const hS4 = filterDays(d.live_s4?.equity_history||[], periodEquity, 'ts');
+  if (!hS4.length) return;
+  const labels = hS4.map(p=>p.ts.slice(0,16).replace('T',' '));
   mkChart('equityChart', {
     type: 'line',
     data: {
       labels,
       datasets: [
-        { label:'M1 (20%)', data:hA.map(p=>p.equity), borderColor:'#3b82f6', borderWidth:2, pointRadius:0, tension:.1, fill:false, borderDash:[4,2] },
-        { label:'S4 (80%)', data:hB.map(p=>p.equity), borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.1, fill:false },
+        { label:'S4 (100%)', data:hS4.map(p=>p.equity), borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.1, fill:false },
       ]
     },
     options: {
@@ -309,10 +302,8 @@ function drawPriceChart(ph, sh) {
 
 // ── NUEVA: gráfica PnL acumulado + barras diarias ─────────────────────────────
 function drawPnlChart(d) {
-  const allTrades = [
-    ...(d.live_a?.trades||[]),
-    ...(d.live_b?.trades||[]),
-  ].sort((a,b) => new Date(a.close_date||0) - new Date(b.close_date||0));
+  const allTrades = [...(d.live_s4?.trades||[])]
+    .sort((a,b) => new Date(a.close_date||0) - new Date(b.close_date||0));
 
   const filtered = filterDays(allTrades, periodPnl, 'close_date');
 
@@ -420,11 +411,8 @@ function render(d) {
   const eq      = balance.equity || 0;
   const avail   = balance.available || 0;
   const unreal  = balance.unrealized_pl || 0;
-  const totalPnl= (d.live_a?.total_pnl_usdt||0) + (d.live_b?.total_pnl_usdt||0);
-
-  const liveTradesA = d.live_a?.trades || [];
-  const liveTradesB = d.live_b?.trades || [];
-  const tabTrades   = activeTradeTab === 'b' ? liveTradesB : liveTradesA;
+  const totalPnl = d.live_s4?.total_pnl_usdt || 0;
+  const liveTrades = d.live_s4?.trades || [];
 
   if (!d.live_mode) {
     document.getElementById('app').innerHTML = `
@@ -475,7 +463,7 @@ function render(d) {
     <!-- Posición abierta -->
     ${renderOpenPosition(d)}
 
-    <!-- Cuentas M1 y S4 -->
+    <!-- Cuenta S4 -->
     ${renderLiveAccounts(d)}
 
     <!-- Gráfica BTC + señales CON FILTRO DE PERIODO -->
@@ -490,7 +478,7 @@ function render(d) {
     <!-- Equity Bitget CON FILTRO DE PERIODO -->
     <div class="chart-card">
       <div class="chart-title">
-        <span>Equity Bitget por estrategia</span>
+        <span>Equity Bitget — S4</span>
         ${periodTabsHtml('equity', periodEquity, ['1','7','30','60','120','360','all'])}
       </div>
       <div class="chart-wrap-sm"><canvas id="equityChart"></canvas></div>
@@ -509,13 +497,9 @@ function render(d) {
     <div class="trades-card">
       <div class="trades-header">
         <span class="trades-title">Historial de operaciones en Bitget</span>
-        <span class="muted" style="font-size:12px">${liveTradesA.length + liveTradesB.length} operaciones cerradas</span>
+        <span class="muted" style="font-size:12px">${liveTrades.length} operaciones cerradas</span>
       </div>
-      <div class="tab-row">
-        <button class="tab ${activeTradeTab==='b'?'active':''}" onclick="setTab('b')">S4 — 80% (${liveTradesB.length})</button>
-        <button class="tab ${activeTradeTab==='a'?'active':''}" onclick="setTab('a')">M1 — 20% (${liveTradesA.length})</button>
-      </div>
-      ${renderTradesTable(tabTrades)}
+      ${renderTradesTable(liveTrades)}
     </div>
 
     <!-- Historial señales MEC -->
@@ -539,7 +523,6 @@ function render(d) {
   drawPnlChart(d);
 }
 
-window.setTab = t => { activeTradeTab = t; if (D) render(D); };
 
 async function fetchData() {
   try {
