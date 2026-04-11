@@ -1,11 +1,10 @@
 {
-  "account_s4": {"name":"S4 (200EUR)","initial":200.0,"cash":200.0,"equity":200.0,"position":null,"trades":[],"equity_history":[]},
-  "last_signal": 0,
-  "last_run": null,
-  "runs": 0,
-  "live_s4": {"name":"S4-Live (100%)","position":null,"trades":[],"equity_history":[],"last_order_id":null,"last_error":null},
-  "live_balance": {"available":0,"equity":0,"unrealized_pl":0}
-},
+  "account_s4": {
+    "name": "S4 (200EUR)",
+    "initial": 200.0,
+    "cash": 200.0,
+    "equity": 200.0,
+    "position": null,
     "trades": [],
     "equity_history": [
       {
