@@ -1,10 +1,9 @@
 """
-MEC Trading Bot v5 — Paper + Live Bitget (split 20/80)
-========================================================
-- Live trading: divide el balance disponible en Bitget:
-    Cuenta A (live_a): 20% del balance — estrategia M1 (leverage 3x fijo)
-    Cuenta B (live_b): 80% del balance — estrategia S4 (leverage dinamico 2x-5x)
-- Paper trading: cuentas simuladas en paralelo para comparar
+MEC Trading Bot v6 — Paper + Live Bitget (S4 100%)
+====================================================
+- Live trading: 100% del balance disponible en Bitget con estrategia S4
+    S4: leverage dinamico 2x-5x segun filtro momentum
+- Paper trading: cuenta simulada en paralelo para comparar
 - Publica snapshot completo en docs/data.json para el dashboard
 """
 
@@ -28,12 +27,7 @@ if LIVE_MODE:
         print("  [AVISO] bitget_api.py no encontrado — solo paper trading")
 
 # ── Configuracion ────────────────────────────────────────────────────────────
-CAPITAL_A = 40.0    # paper
-CAPITAL_B = 160.0   # paper
-
-# Split del balance real de Bitget
-SPLIT_A = 0.20   # 20% para estrategia M1 (mas arriesgada)
-SPLIT_B = 0.80   # 80% para estrategia S4 (mas conservadora)
+CAPITAL_S4 = 200.0   # paper
 
 STATE_FILE = Path("state.json")
 DATA_FILE  = Path("docs/data.json")
@@ -242,15 +236,7 @@ def add_indicators(df):
     return df
 
 
-# ── Sizing ───────────────────────────────────────────────────────────────────
-def sizing_m1(row, side):
-    atr_pct = float(row.get("ATR_PCT", 0.02))
-    if pd.isna(atr_pct) or atr_pct <= 0: atr_pct = 0.02
-    frac = 0.20*(0.015/atr_pct)
-    return 3.0, float(np.clip(frac, 0.05, 0.30))
-
-
-def sizing_s4(row, side):
+# ── Sizing ───────────────────────────────────────────────────────────────────def sizing_s4(row, side):
     mom = float(row.get("MOMENTUM_SCORE", 0))
     atr_pct = float(row.get("ATR_PCT", 0.025))
     if pd.isna(mom): mom = 0
@@ -268,10 +254,9 @@ def make_account(name, capital):
             "equity": capital, "position": None, "trades": [], "equity_history": []}
 
 
-def _make_live_account(name, split):
+def _make_live_account(name):
     return {
         "name":           name,
-        "split_pct":      split,
         "position":       None,
         "trades":         [],
         "equity_history": [],
@@ -284,12 +269,10 @@ def load_state():
     if STATE_FILE.exists():
         with open(STATE_FILE) as f:
             st = json.load(f)
-        if "account_a" not in st or "account_b" not in st:
+        if "account_s4" not in st:
             return _fresh_state()
-        for acc in [st["account_a"], st["account_b"]]:
-            acc.setdefault("equity_history", [])
-        st.setdefault("live_a", _make_live_account("M1-Live (20%)", SPLIT_A))
-        st.setdefault("live_b", _make_live_account("S4-Live (80%)", SPLIT_B))
+        st["account_s4"].setdefault("equity_history", [])
+        st.setdefault("live_s4", _make_live_account("S4-Live (100%)"))
         st.setdefault("live_balance", {"available": 0, "equity": 0, "unrealized_pl": 0})
         return st
     return _fresh_state()
@@ -297,13 +280,11 @@ def load_state():
 
 def _fresh_state():
     return {
-        "account_a":   make_account("M1 (40EUR)",  CAPITAL_A),
-        "account_b":   make_account("S4 (160EUR)", CAPITAL_B),
+        "account_s4":  make_account("S4 (200EUR)", CAPITAL_S4),
         "last_signal": 0,
         "last_run":    None,
         "runs":        0,
-        "live_a":      _make_live_account("M1-Live (20%)", SPLIT_A),
-        "live_b":      _make_live_account("S4-Live (80%)", SPLIT_B),
+        "live_s4":     _make_live_account("S4-Live (100%)"),
         "live_balance":{"available": 0, "equity": 0, "unrealized_pl": 0},
     }
 
@@ -414,84 +395,45 @@ def live_open_trade(state, current_sig, entry_px, atr, row):
         sl_price = entry_px - sl_dist if current_sig==1 else entry_px + sl_dist
         tp_price = entry_px + tp_dist if current_sig==1 else entry_px - tp_dist
 
-        # ── Cuenta A live: 20% del balance, leverage M1 (3x) ──
-        live_a = state["live_a"]
-        if live_a.get("position") is None and not client.has_open_position("BTCUSDT"):
-            margin_a   = available * SPLIT_A
-            leverage_a = 3
-            notional_a = margin_a * leverage_a
+        # ── S4 live: 100% del balance, leverage dinamico ──
+        live_s4 = state["live_s4"]
+        if live_s4.get("position") is None and not client.has_open_position("BTCUSDT"):
+            leverage_s4, _ = sizing_s4(row, current_sig)
+            leverage_s4    = int(np.clip(int(leverage_s4), 2, 5))
+            notional_s4    = available * leverage_s4
             try:
-                result_a = client.place_order(
+                result = client.place_order(
                     symbol="BTCUSDT", direction=direction,
-                    size_usdt=notional_a, sl_price=sl_price,
-                    tp_price=tp_price, leverage=leverage_a,
+                    size_usdt=notional_s4, sl_price=sl_price,
+                    tp_price=tp_price, leverage=leverage_s4,
                 )
-                live_a["position"] = {
+                live_s4["position"] = {
                     "side":        "LONG" if current_sig==1 else "SHORT",
                     "side_int":    current_sig,
-                    "entry_px":    result_a["entry_px"],
-                    "qty":         result_a["qty"],
+                    "entry_px":    result["entry_px"],
+                    "qty":         result["qty"],
                     "sl_px":       sl_price,
                     "tp_px":       tp_price,
-                    "leverage":    leverage_a,
-                    "margin_usdt": round(margin_a, 4),
-                    "notional":    round(notional_a, 4),
-                    "order_id":    result_a["orderId"],
+                    "leverage":    leverage_s4,
+                    "margin_usdt": round(available, 4),
+                    "notional":    round(notional_s4, 4),
+                    "order_id":    result["orderId"],
                     "open_date":   datetime.now(timezone.utc).isoformat(),
                 }
-                live_a["last_order_id"] = result_a["orderId"]
-                live_a["last_error"]    = None
-                print(f"  [LIVE-A] M1 20%: {direction.upper()} {result_a['qty']} BTC"
-                      f"  margin={margin_a:.2f} USDT  lev={leverage_a}x")
+                live_s4["last_order_id"] = result["orderId"]
+                live_s4["last_error"]    = None
+                print(f"  [LIVE-S4] S4 100%: {direction.upper()} {result['qty']} BTC"
+                      f"  margin={available:.2f} USDT  lev={leverage_s4}x")
             except Exception as e:
-                live_a["last_error"] = str(e)
-                print(f"  [LIVE-A] ERROR: {e}")
-
-        # ── Cuenta B live: 80% del balance, leverage S4 dinamico ──
-        live_b = state["live_b"]
-        if live_b.get("position") is None:
-            # Refrescar balance real tras abrir M1
-            try:
-                available = float(client.get_balance()["available"])
-            except Exception:
-                pass
-            margin_b   = available * SPLIT_B
-            leverage_b, _ = sizing_s4(row, current_sig)
-            leverage_b = int(np.clip(int(leverage_b), 2, 5))
-            notional_b = margin_b * leverage_b
-            try:
-                result_b = client.place_order(
-                    symbol="BTCUSDT", direction=direction,
-                    size_usdt=notional_b, sl_price=sl_price,
-                    tp_price=tp_price, leverage=leverage_b,
-                )
-                live_b["position"] = {
-                    "side":        "LONG" if current_sig==1 else "SHORT",
-                    "side_int":    current_sig,
-                    "entry_px":    result_b["entry_px"],
-                    "qty":         result_b["qty"],
-                    "sl_px":       sl_price,
-                    "tp_px":       tp_price,
-                    "leverage":    leverage_b,
-                    "margin_usdt": round(margin_b, 4),
-                    "notional":    round(notional_b, 4),
-                    "order_id":    result_b["orderId"],
-                    "open_date":   datetime.now(timezone.utc).isoformat(),
-                }
-                live_b["last_order_id"] = result_b["orderId"]
-                live_b["last_error"]    = None
-                print(f"  [LIVE-B] S4 80%: {direction.upper()} {result_b['qty']} BTC"
-                      f"  margin={margin_b:.2f} USDT  lev={leverage_b}x")
-            except Exception as e:
-                live_b["last_error"] = str(e)
-                print(f"  [LIVE-B] ERROR: {e}")
+                live_s4["last_error"] = str(e)
+                print(f"  [LIVE-S4] ERROR: {e}")
 
     except Exception as e:
         print(f"  [LIVE] ERROR general al abrir: {e}")
 
 
 def live_sync(state):
-    """Sincroniza posiciones live con el estado en Bitget."""
+    """Sincroniza posicion live con el estado en Bitget."""
     if not LIVE_MODE:
         return
     try:
@@ -500,10 +442,8 @@ def live_sync(state):
         state["live_balance"] = balance
         has_pos  = client.has_open_position("BTCUSDT")
 
-        for key in ["live_a", "live_b"]:
-            acc = state[key]
-            if acc.get("position") is None:
-                continue
+        acc = state["live_s4"]
+        if acc.get("position") is not None:
             if not has_pos:
                 local = acc["position"]
                 pnl_usdt = 0.0
@@ -527,21 +467,20 @@ def live_sync(state):
                 })
                 acc["position"] = None
                 sign = "+" if pnl_usdt >= 0 else ""
-                print(f"  [{key.upper()}] Cerrado en Bitget. PnL={sign}{pnl_usdt:.4f} USDT")
+                print(f"  [LIVE-S4] Cerrado en Bitget. PnL={sign}{pnl_usdt:.4f} USDT")
             else:
-                print(f"  [{key.upper()}] Posicion sigue abierta")
+                print(f"  [LIVE-S4] Posicion sigue abierta")
 
         # Equity history live
         equity   = float(balance["equity"])
         unreal   = float(balance["unrealized_pl"])
         ts_now   = datetime.now(timezone.utc).isoformat()
-        for key in ["live_a", "live_b"]:
-            state[key].setdefault("equity_history", [])
-            state[key]["equity_history"].append({
-                "ts": ts_now, "equity": round(equity, 4), "unrealPL": round(unreal, 4)
-            })
-            if len(state[key]["equity_history"]) > 1000:
-                state[key]["equity_history"] = state[key]["equity_history"][-1000:]
+        state["live_s4"].setdefault("equity_history", [])
+        state["live_s4"]["equity_history"].append({
+            "ts": ts_now, "equity": round(equity, 4), "unrealPL": round(unreal, 4)
+        })
+        if len(state["live_s4"]["equity_history"]) > 1000:
+            state["live_s4"]["equity_history"] = state["live_s4"]["equity_history"][-1000:]
 
         print(f"  [LIVE] Equity Bitget: {equity:.4f} USDT  UnrealPL: {unreal:+.4f}")
 
@@ -669,18 +608,13 @@ def publish_data(state, df, current_signal):
             "available":     round(float(balance.get("available",0)), 4),
             "unrealized_pl": round(float(balance.get("unrealized_pl",0)), 4),
         },
-        "account_a":       _acc_snap(state["account_a"]),
-        "account_b":       _acc_snap(state["account_b"]),
-        "live_a":          _live_snap(state["live_a"], balance),
-        "live_b":          _live_snap(state["live_b"], balance),
+        "account_s4":      _acc_snap(state["account_s4"]),
+        "live_s4":         _live_snap(state["live_s4"], balance),
         "signal_history":  signal_history,
         "price_history":   price_history,
-        "daily_pnl_a":     _daily_pnl(state["live_a"].get("trades",[])),
-        "daily_pnl_b":     _daily_pnl(state["live_b"].get("trades",[])),
-        "portfolio_equity": round(
-            state["account_a"]["equity"] + state["account_b"]["equity"], 4
-        ),
-        "portfolio_initial": CAPITAL_A + CAPITAL_B,
+        "daily_pnl_s4":    _daily_pnl(state["live_s4"].get("trades",[])),
+        "portfolio_equity":  round(state["account_s4"]["equity"], 4),
+        "portfolio_initial": CAPITAL_S4,
     }
 
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -694,8 +628,8 @@ def publish_data(state, df, current_signal):
 # ── Main ─────────────────────────────────────────────────────────────────────
 def run():
     print(f"\n{'='*55}")
-    print(f"  MEC Bot v5 — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC")
-    print(f"  Modo: {'PAPER + LIVE Bitget (20/80)' if LIVE_MODE else 'PAPER ONLY'}")
+    print(f"  MEC Bot v6 — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')} UTC")
+    print(f"  Modo: {'PAPER + LIVE Bitget (S4 100%)' if LIVE_MODE else 'PAPER ONLY'}")
     print(f"{'='*55}")
 
     state = load_state()
@@ -723,8 +657,7 @@ def run():
     print(f"  Precio: {current_px:.0f}  |  Senal: {sig_str}  |  ATR: {atr_val:.0f}")
 
     # Cerrar paper si toca
-    for acc in [state["account_a"], state["account_b"]]:
-        check_close_trade(acc, last_row)
+    check_close_trade(state["account_s4"], last_row)
 
     # Sincronizar live
     if LIVE_MODE:
@@ -733,21 +666,18 @@ def run():
     # Si senal nueva -> operar
     if current_sig in (1,2) and current_sig != prev_signal:
         print(f"\n  *** SENAL NUEVA: {sig_str} ***")
-        open_trade(state["account_a"], current_sig, current_px, atr_val, sizing_m1, last_row)
-        open_trade(state["account_b"], current_sig, current_px, atr_val, sizing_s4, last_row)
+        open_trade(state["account_s4"], current_sig, current_px, atr_val, sizing_s4, last_row)
         if LIVE_MODE:
             live_open_trade(state, current_sig, current_px, atr_val, last_row)
         state["last_signal"] = current_sig
     elif current_sig==0 and prev_signal!=0:
         state["last_signal"] = 0
 
-    for acc in [state["account_a"], state["account_b"]]:
-        update_equity(acc, current_px)
+    update_equity(state["account_s4"], current_px)
 
-    pnl = (state["account_a"]["equity"]+state["account_b"]["equity"]-CAPITAL_A-CAPITAL_B)
+    pnl  = state["account_s4"]["equity"] - CAPITAL_S4
     sign = "+" if pnl >= 0 else ""
-    print(f"\n  Portfolio paper: {state['account_a']['equity']:.2f} + "
-          f"{state['account_b']['equity']:.2f}  PnL: {sign}{pnl:.4f}")
+    print(f"\n  Portfolio paper S4: {state['account_s4']['equity']:.2f}  PnL: {sign}{pnl:.4f}")
 
     save_state(state)
     publish_data(state, df, current_sig)
