@@ -1,23 +1,11 @@
 {
-  "account_s4": {
-    "name": "S4 (200EUR)",
-    "initial": 200.0,
-    "cash": 179.5603347361768,
-    "equity": 199.96996050376453,
-    "position": {
-      "side": "LONG",
-      "side_int": 1,
-      "entry_px": 72690.9921875,
-      "units": 0.0006446866919291055,
-      "margin": 20.416233806180013,
-      "notional": 46.862915286403826,
-      "leverage": 2.295375128013002,
-      "sl_px": 68418.45145089286,
-      "tp_px": 75895.39773995536,
-      "entry_fee": 0.023431457643201915,
-      "open_date": "2026-04-11T09:10:16.257403+00:00",
-      "open_bars": 2
-    },
+  "account_s4": {"name":"S4 (200EUR)","initial":200.0,"cash":200.0,"equity":200.0,"position":null,"trades":[],"equity_history":[]},
+  "last_signal": 0,
+  "last_run": null,
+  "runs": 0,
+  "live_s4": {"name":"S4-Live (100%)","position":null,"trades":[],"equity_history":[],"last_order_id":null,"last_error":null},
+  "live_balance": {"available":0,"equity":0,"unrealized_pl":0}
+},
     "trades": [],
     "equity_history": [
       {
