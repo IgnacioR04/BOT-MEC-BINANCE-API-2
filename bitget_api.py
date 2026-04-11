@@ -153,15 +153,13 @@ class BitgetClient:
 
     # ── Configurar cuenta ──────────────────────────────────────────────────────
     def set_leverage(self, symbol, leverage, margin_mode="isolated"):
-        try:
-            return self._post("/api/v2/mix/account/set-leverage", {
-                "symbol":      symbol,
-                "productType": PRODUCT,
-                "marginCoin":  "USDT",
-                "leverage":    str(int(leverage)),
-            })
-        except RuntimeError:
-            return {}
+        return self._post("/api/v2/mix/account/set-leverage", {
+            "symbol":      symbol,
+            "productType": PRODUCT,
+            "marginCoin":  "USDT",
+            "leverage":    str(int(leverage)),
+            "holdSide":    "long_short",
+        })
 
     def set_margin_mode(self, symbol, margin_mode="isolated"):
         try:
@@ -174,12 +172,49 @@ class BitgetClient:
         except RuntimeError:
             return {}
 
-    # ── Abrir posicion con TP y SL en un solo POST ─────────────────────────────
+    # ── Abrir posicion con TP y SL ───────────────────────────────────────────────
+    def place_tpsl(self, symbol, direction, tp_price, sl_price):
+        """
+        Coloca TP y SL sobre una posicion ya abierta usando place-tpsl.
+        direction: "buy" (posicion LONG) o "sell" (posicion SHORT)
+        """
+        hold_side = "long" if direction == "buy" else "short"
+        try:
+            self._post("/api/v2/mix/order/place-tpsl", {
+                "symbol":           symbol,
+                "productType":      PRODUCT,
+                "marginCoin":       "USDT",
+                "planType":         "pos_profit",
+                "triggerPrice":     str(round(tp_price, 1)),
+                "triggerType":      "mark_price",
+                "executePrice":     "0",
+                "holdSide":         hold_side,
+                "size":             "",
+                "rangeRate":        "",
+            })
+            print(f"  [BITGET] TP colocado: {tp_price:.0f}")
+        except Exception as e:
+            print(f"  [BITGET] Aviso TP: {e}")
+        try:
+            self._post("/api/v2/mix/order/place-tpsl", {
+                "symbol":           symbol,
+                "productType":      PRODUCT,
+                "marginCoin":       "USDT",
+                "planType":         "pos_loss",
+                "triggerPrice":     str(round(sl_price, 1)),
+                "triggerType":      "mark_price",
+                "executePrice":     "0",
+                "holdSide":         hold_side,
+                "size":             "",
+                "rangeRate":        "",
+            })
+            print(f"  [BITGET] SL colocado: {sl_price:.0f}")
+        except Exception as e:
+            print(f"  [BITGET] Aviso SL: {e}")
+
     def place_order(self, symbol, direction, size_usdt, sl_price, tp_price, leverage):
         """
-        Abre posicion de mercado con TP y SL adjuntos en la misma orden.
-        En Bitget v2 se usan presetStopLossPrice y presetTakeProfitPrice.
-
+        Abre posicion de mercado y luego coloca TP y SL por separado.
         direction: "buy" (LONG) o "sell" (SHORT)
         size_usdt: notional total en USDT (margen * leverage)
         """
@@ -199,24 +234,27 @@ class BitgetClient:
         client_id = f"mec_{direction[0].upper()}_{ts_str}"
 
         body = {
-            "symbol":                symbol,
-            "productType":           PRODUCT,
-            "marginMode":            "isolated",
-            "marginCoin":            "USDT",
-            "size":                  str(qty),
-            "side":                  direction,
-            "tradeSide":             "open",
-            "orderType":             "market",
-            "clientOid":             client_id,
-            "presetStopLossPrice":   str(round(sl_price, 1)),
-            "presetTakeProfitPrice": str(round(tp_price, 1)),
+            "symbol":      symbol,
+            "productType": PRODUCT,
+            "marginMode":  "isolated",
+            "marginCoin":  "USDT",
+            "size":        str(qty),
+            "side":        direction,
+            "tradeSide":   "open",
+            "orderType":   "market",
+            "clientOid":   client_id,
         }
         data = self._post("/api/v2/mix/order/place-order", body)
         order_id = data["data"].get("orderId")
 
         print(f"  [BITGET] Orden OK: {direction.upper()} {qty} BTC @ ~{mkt_px:.0f}"
-              f"  SL={sl_price:.0f}  TP={tp_price:.0f}  lev={leverage}x"
-              f"  orderId={order_id}")
+              f"  lev={leverage}x  orderId={order_id}")
+
+        # Esperar un momento para que la posicion este activa antes de poner TP/SL
+        import time; time.sleep(1)
+        self.place_tpsl(symbol, direction, tp_price, sl_price)
+
+        print(f"  [BITGET] SL={sl_price:.0f}  TP={tp_price:.0f}")
 
         return {
             "orderId":  order_id,
