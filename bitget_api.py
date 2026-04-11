@@ -153,13 +153,15 @@ class BitgetClient:
 
     # ── Configurar cuenta ──────────────────────────────────────────────────────
     def set_leverage(self, symbol, leverage, margin_mode="isolated"):
-        return self._post("/api/v2/mix/account/set-leverage", {
-            "symbol":      symbol,
-            "productType": PRODUCT,
-            "marginCoin":  "USDT",
-            "leverage":    str(int(leverage)),
-            "holdSide":    "long_short",
-        })
+        try:
+            return self._post("/api/v2/mix/account/set-leverage", {
+                "symbol":      symbol,
+                "productType": PRODUCT,
+                "marginCoin":  "USDT",
+                "leverage":    str(int(leverage)),
+            })
+        except RuntimeError:
+            return {}
 
     def set_margin_mode(self, symbol, margin_mode="isolated"):
         try:
