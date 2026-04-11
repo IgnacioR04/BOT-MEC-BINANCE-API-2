@@ -450,6 +450,11 @@ def live_open_trade(state, current_sig, entry_px, atr, row):
         # ── Cuenta B live: 80% del balance, leverage S4 dinamico ──
         live_b = state["live_b"]
         if live_b.get("position") is None:
+            # Refrescar balance real tras abrir M1
+            try:
+                available = float(client.get_balance()["available"])
+            except Exception:
+                pass
             margin_b   = available * SPLIT_B
             leverage_b, _ = sizing_s4(row, current_sig)
             leverage_b = int(np.clip(int(leverage_b), 2, 5))
