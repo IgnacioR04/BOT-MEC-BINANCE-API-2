@@ -17,7 +17,10 @@ import pandas as pd
 import yfinance as yf
 
 # ── Deteccion de modo live ──────────────────────────────────────────────────
-LIVE_MODE = bool(os.environ.get("BITGET_API_KEY"))
+_api_key = os.environ.get("BITGET_API_KEY")
+_live_req = os.environ.get("LIVE_MODE", "false").lower() == "true"
+LIVE_MODE = bool(_api_key) and _live_req
+
 if LIVE_MODE:
     try:
         from bitget_api import client_from_env
@@ -25,6 +28,10 @@ if LIVE_MODE:
     except ImportError:
         LIVE_MODE = False
         print("  [AVISO] bitget_api.py no encontrado — solo paper trading")
+elif _api_key and not _live_req:
+    print("  [AVISO] Credenciales detectadas pero LIVE_MODE no es True — modo paper activo")
+else:
+    print("  [INFO] Modo paper trading activo")
 
 # ── Configuracion ────────────────────────────────────────────────────────────
 CAPITAL_S4 = 200.0   # paper
