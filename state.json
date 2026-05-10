@@ -2,9 +2,22 @@
   "account_s4": {
     "name": "S4 (200EUR)",
     "initial": 200.0,
-    "cash": 199.5272790979342,
-    "equity": 199.5272790979342,
-    "position": null,
+    "cash": 173.67414090265873,
+    "equity": 199.5014517870498,
+    "position": {
+      "side": "LONG",
+      "side_int": 1,
+      "entry_px": 80749.2734375,
+      "units": 0.0006396914742367667,
+      "margin": 25.82731088439108,
+      "notional": 51.65462176878216,
+      "leverage": 2.0,
+      "sl_px": 77006.33258928571,
+      "tp_px": 83556.47907366071,
+      "entry_fee": 0.02582731088439108,
+      "open_date": "2026-05-10T03:09:43.454163+00:00",
+      "open_bars": 0
+    },
     "trades": [
       {
         "side": "LONG",
@@ -162,10 +175,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-05-09T10:05:44.516635+00:00",
-        "equity": 199.5273
-      },
       {
         "ts": "2026-05-09T10:06:41.048785+00:00",
         "equity": 199.5273
@@ -4161,12 +4170,16 @@
       {
         "ts": "2026-05-10T03:08:43.398521+00:00",
         "equity": 199.5273
+      },
+      {
+        "ts": "2026-05-10T03:09:44.943789+00:00",
+        "equity": 199.5015
       }
     ]
   },
-  "last_signal": 0,
-  "last_run": "2026-05-10T03:08:42.407714+00:00",
-  "runs": 40431,
+  "last_signal": 1,
+  "last_run": "2026-05-10T03:09:40.966312+00:00",
+  "runs": 40432,
   "live_s4": {
     "name": "S4-Live (100%)",
     "position": null,
@@ -4185,11 +4198,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-05-09T10:05:44.515703+00:00",
-        "equity": 73.7255,
-        "unrealPL": 0.0
-      },
       {
         "ts": "2026-05-09T10:06:41.047861+00:00",
         "equity": 73.7255,
@@ -9184,10 +9192,15 @@
         "ts": "2026-05-10T03:08:43.397699+00:00",
         "equity": 73.7255,
         "unrealPL": 0.0
+      },
+      {
+        "ts": "2026-05-10T03:09:43.453152+00:00",
+        "equity": 73.7255,
+        "unrealPL": 0.0
       }
     ],
     "last_order_id": "1426789769932324865",
-    "last_error": "Bitget POST /api/v2/mix/account/set-leverage error: {'code': '40019', 'msg': 'Parameter holdSide cannot be empty', 'requestTime': 1778286661346, 'data': None}"
+    "last_error": "Bitget POST /api/v2/mix/account/set-leverage error: {'code': '40019', 'msg': 'Parameter holdSide cannot be empty', 'requestTime': 1778382584860, 'data': None}"
   },
   "live_balance": {
     "available": 73.72552656,
