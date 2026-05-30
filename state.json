@@ -2,9 +2,22 @@
   "account_s4": {
     "name": "S4 (200EUR)",
     "initial": 200.0,
-    "cash": 199.4380831589053,
-    "equity": 199.4380831589053,
-    "position": null,
+    "cash": 173.99038183938268,
+    "equity": 199.39603004310692,
+    "position": {
+      "side": "SHORT",
+      "side_int": 2,
+      "entry_px": 73711.4609375,
+      "units": 0.0011410197346116086,
+      "margin": 25.405648203724255,
+      "notional": 84.1062315967402,
+      "leverage": 3.3105327965775317,
+      "sl_px": 77183.3359375,
+      "tp_px": 71107.5546875,
+      "entry_fee": 0.0420531157983701,
+      "open_date": "2026-05-30T22:41:49.225643+00:00",
+      "open_bars": 0
+    },
     "trades": [
       {
         "side": "SHORT",
@@ -30,10 +43,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-05-30T04:41:53.617378+00:00",
-        "equity": 199.5082
-      },
       {
         "ts": "2026-05-30T04:42:56.722418+00:00",
         "equity": 199.5082
@@ -4029,12 +4038,16 @@
       {
         "ts": "2026-05-30T22:40:56.777170+00:00",
         "equity": 199.4381
+      },
+      {
+        "ts": "2026-05-30T22:41:50.780811+00:00",
+        "equity": 199.396
       }
     ]
   },
-  "last_signal": 0,
-  "last_run": "2026-05-30T22:40:56.002916+00:00",
-  "runs": 24697,
+  "last_signal": 2,
+  "last_run": "2026-05-30T22:41:47.386904+00:00",
+  "runs": 24698,
   "live_s4": {
     "name": "S4-Live (100%)",
     "position": null,
@@ -4053,11 +4066,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-05-30T04:41:53.616445+00:00",
-        "equity": 88.9334,
-        "unrealPL": 0.0
-      },
       {
         "ts": "2026-05-30T04:42:56.721641+00:00",
         "equity": 88.9334,
@@ -9052,10 +9060,15 @@
         "ts": "2026-05-30T22:40:56.776306+00:00",
         "equity": 88.9334,
         "unrealPL": 0.0
+      },
+      {
+        "ts": "2026-05-30T22:41:49.224553+00:00",
+        "equity": 88.9334,
+        "unrealPL": 0.0
       }
     ],
     "last_order_id": "1426789769932324865",
-    "last_error": "Bitget POST /api/v2/mix/order/place-order error: {'code': '40762', 'msg': 'The order amount exceeds the balance', 'requestTime': 1780176301830, 'data': None}"
+    "last_error": "Bitget POST /api/v2/mix/order/place-order error: {'code': '40762', 'msg': 'The order amount exceeds the balance', 'requestTime': 1780180910694, 'data': None}"
   },
   "live_balance": {
     "available": 88.93342867,
