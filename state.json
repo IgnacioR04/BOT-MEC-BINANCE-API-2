@@ -53,10 +53,6 @@
     ],
     "equity_history": [
       {
-        "ts": "2026-06-07T14:28:55.386489+00:00",
-        "equity": 199.2784
-      },
-      {
         "ts": "2026-06-07T14:29:54.250553+00:00",
         "equity": 199.2784
       },
@@ -4051,12 +4047,16 @@
       {
         "ts": "2026-06-08T11:35:05.334329+00:00",
         "equity": 199.27
+      },
+      {
+        "ts": "2026-06-08T11:36:54.113042+00:00",
+        "equity": 199.27
       }
     ]
   },
-  "last_signal": 2,
-  "last_run": "2026-06-08T11:35:02.749800+00:00",
-  "runs": 34651,
+  "last_signal": 0,
+  "last_run": "2026-06-08T11:36:51.342690+00:00",
+  "runs": 34652,
   "live_s4": {
     "name": "S4-Live (100%)",
     "position": null,
@@ -4075,11 +4075,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-06-07T14:28:55.385614+00:00",
-        "equity": 66.0003,
-        "unrealPL": 0.0
-      },
       {
         "ts": "2026-06-07T14:29:54.249798+00:00",
         "equity": 66.0003,
@@ -9074,14 +9069,19 @@
         "ts": "2026-06-08T11:35:05.333590+00:00",
         "equity": 59.5507,
         "unrealPL": -1.899
+      },
+      {
+        "ts": "2026-06-08T11:36:54.112157+00:00",
+        "equity": 58.076,
+        "unrealPL": 0.0
       }
     ],
     "last_order_id": "1426789769932324865",
     "last_error": "Bitget POST /api/v2/mix/order/place-order error: {'code': '40762', 'msg': 'The order amount exceeds the balance', 'requestTime': 1780899762260, 'data': None}"
   },
   "live_balance": {
-    "available": 2.09584233,
-    "equity": 59.550717335645,
-    "unrealized_pl": -1.899
+    "available": 58.07596653,
+    "equity": 58.075966535645,
+    "unrealized_pl": 0.0
   }
 }
