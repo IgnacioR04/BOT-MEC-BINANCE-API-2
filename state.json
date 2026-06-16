@@ -2,9 +2,22 @@
   "account_s4": {
     "name": "S4 (200EUR)",
     "initial": 200.0,
-    "cash": 199.26878212763765,
-    "equity": 199.26878212763765,
-    "position": null,
+    "cash": 182.8543906353291,
+    "equity": 199.25061600476965,
+    "position": {
+      "side": "SHORT",
+      "side_int": 2,
+      "entry_px": 66707.6171875,
+      "units": 0.0005446491310559624,
+      "margin": 16.39622536944054,
+      "notional": 36.33224573598566,
+      "leverage": 2.2158908478839336,
+      "sl_px": 71571.93638392857,
+      "tp_px": 63059.37779017857,
+      "entry_fee": 0.01816612286799283,
+      "open_date": "2026-06-16T09:11:17.931769+00:00",
+      "open_bars": 0
+    },
     "trades": [
       {
         "side": "SHORT",
@@ -140,10 +153,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-06-15T04:30:02.650667+00:00",
-        "equity": 199.3294
-      },
       {
         "ts": "2026-06-15T04:31:21.679286+00:00",
         "equity": 199.3294
@@ -4139,15 +4148,31 @@
       {
         "ts": "2026-06-16T09:10:03.125078+00:00",
         "equity": 199.2688
+      },
+      {
+        "ts": "2026-06-16T09:11:20.846109+00:00",
+        "equity": 199.2506
       }
     ]
   },
-  "last_signal": 0,
-  "last_run": "2026-06-16T09:10:00.862240+00:00",
-  "runs": 42197,
+  "last_signal": 2,
+  "last_run": "2026-06-16T09:11:15.891758+00:00",
+  "runs": 42198,
   "live_s4": {
     "name": "S4-Live (100%)",
-    "position": null,
+    "position": {
+      "side": "SHORT",
+      "side_int": 2,
+      "entry_px": 66715.4,
+      "qty": 0.0012,
+      "sl_px": 71571.93638392857,
+      "tp_px": 63059.37779017857,
+      "leverage": 2,
+      "margin_usdt": 43.2776,
+      "notional": 86.5553,
+      "order_id": "1450705561610502145",
+      "open_date": "2026-06-16T09:11:20.845094+00:00"
+    },
     "trades": [
       {
         "side": "LONG",
@@ -4163,11 +4188,6 @@
       }
     ],
     "equity_history": [
-      {
-        "ts": "2026-06-15T04:30:02.649692+00:00",
-        "equity": 43.2776,
-        "unrealPL": 0.0
-      },
       {
         "ts": "2026-06-15T04:31:21.678320+00:00",
         "equity": 43.2776,
@@ -9162,10 +9182,15 @@
         "ts": "2026-06-16T09:10:03.124484+00:00",
         "equity": 43.2776,
         "unrealPL": 0.0
+      },
+      {
+        "ts": "2026-06-16T09:11:17.930618+00:00",
+        "equity": 43.2776,
+        "unrealPL": 0.0
       }
     ],
-    "last_order_id": "1426789769932324865",
-    "last_error": "Bitget POST /api/v2/mix/order/place-order error: {'code': '40762', 'msg': 'The order amount exceeds the balance', 'requestTime': 1781591707936, 'data': None}"
+    "last_order_id": "1450705561610502145",
+    "last_error": null
   },
   "live_balance": {
     "available": 43.27763705,
