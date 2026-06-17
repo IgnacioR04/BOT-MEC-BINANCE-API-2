@@ -77,9 +77,14 @@ class BitgetClient:
         headers   = self._headers("GET", full_path)
         resp      = self.session.get(BASE_URL + full_path,
                                      headers=headers, timeout=10)
-        data = resp.json()
+        try:
+            data = resp.json()
+        except json.JSONDecodeError:
+            raise RuntimeError(f"Bitget GET {path} failed: Invalid JSON response (Status {resp.status_code})")
+
         if data.get("code") != "00000":
-            raise RuntimeError(f"Bitget GET {path} error: {data}")
+            msg = data.get("msg", "No error message provided")
+            raise RuntimeError(f"Bitget GET {path} error: {data.get('code')} - {msg}")
         return data
 
     def _post(self, path, body_dict):
@@ -88,9 +93,14 @@ class BitgetClient:
         resp     = self.session.post(BASE_URL + path,
                                      headers=headers,
                                      data=body_str, timeout=10)
-        data = resp.json()
+        try:
+            data = resp.json()
+        except json.JSONDecodeError:
+            raise RuntimeError(f"Bitget POST {path} failed: Invalid JSON response (Status {resp.status_code})")
+
         if data.get("code") != "00000":
-            raise RuntimeError(f"Bitget POST {path} error: {data}")
+            msg = data.get("msg", "No error message provided")
+            raise RuntimeError(f"Bitget POST {path} error: {data.get('code')} - {msg}")
         return data
 
     # ── Precio de mercado ──────────────────────────────────────────────────────
